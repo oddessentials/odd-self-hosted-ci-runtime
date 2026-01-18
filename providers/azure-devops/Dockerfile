@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Azure Pipelines agent version
 # Check for latest: https://github.com/microsoft/azure-pipelines-agent/releases
-ARG AGENT_VERSION=3.248.0
+ARG AGENT_VERSION=4.266.2
 
 # -----------------------------------------------------------------------------
 # Install dependencies
@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # -----------------------------------------------------------------------------
 # Install Docker CLI (for Docker-in-Docker workflows)
 # -----------------------------------------------------------------------------
-RUN curl -fsSL https://get.docker.com | sh
+RUN curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors https://get.docker.com | sh
 
 # -----------------------------------------------------------------------------
 # Create non-root user
@@ -43,10 +43,11 @@ RUN useradd -m -s /bin/bash agent \
 # -----------------------------------------------------------------------------
 WORKDIR /home/agent
 
-RUN curl -fsSL -o vsts-agent.tar.gz \
-    "https://vstsagentpackage.azureedge.net/agent/${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz" \
-    && tar xzf vsts-agent.tar.gz \
-    && rm vsts-agent.tar.gz \
+RUN curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors \
+    -o /tmp/vsts-agent.tar.gz \
+    "https://download.agent.dev.azure.com/agent/${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz" \
+    && tar xzf /tmp/vsts-agent.tar.gz \
+    && rm /tmp/vsts-agent.tar.gz \
     && chown -R agent:agent /home/agent
 
 # -----------------------------------------------------------------------------

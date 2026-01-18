@@ -1,0 +1,80 @@
+# =============================================================================
+# OSCR Release Workflow
+# =============================================================================
+# Runs semantic-release to automatically version and create GitHub releases
+# based on conventional commit messages.
+#
+# Triggers:
+#   - Push to main (after CI passes)
+#   - Manual workflow_dispatch
+#
+# Creates:
+#   - Git tags (v1.0.0 format)
+#   - GitHub Releases with auto-generated notes
+#   - Updated CHANGELOG.md
+#   - Triggers Docker image publishing with semver tags
+
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Ensure only one release runs at a time
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Semantic Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run semantic-release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          echo "### Release v${{ steps.semantic.outputs.new_release_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "A new release has been published." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** v${{ steps.semantic.outputs.new_release_version }}" >> $GITHUB_STEP_SUMMARY
+
+  # Trigger Docker image publishing with the new version tag
+  publish-images:
+    name: Publish Docker Images
+    needs: release
+    if: needs.release.outputs.new_release_published == 'true'
+    uses: ./.github/workflows/publish.yml
+    with:
+      version: ${{ needs.release.outputs.new_release_version }}
+    secrets: inherit

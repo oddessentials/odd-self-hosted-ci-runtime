@@ -174,7 +174,38 @@ Before submitting a PR, ask:
 4. Does it keep the orchestrator boring?
 5. Does it reduce security risk?
 
-If the answer to **any** is “no,” the change likely does not belong in OSCR.
+If the answer to **any** is "no," the change likely does not belong in OSCR.
+
+---
+
+## Commit Message Format
+
+OSCR uses [Conventional Commits](https://www.conventionalcommits.org/) for automated versioning and changelog generation.
+
+**Format:** `<type>(<scope>): <description>`
+
+| Type | Description | Version Impact |
+|------|-------------|----------------|
+| `feat` | New feature | Minor (0.x.0) |
+| `fix` | Bug fix | Patch (0.0.x) |
+| `docs` | Documentation only | None |
+| `style` | Code style (formatting) | None |
+| `refactor` | Code refactoring | Patch |
+| `perf` | Performance improvement | Patch |
+| `test` | Adding/updating tests | None |
+| `build` | Build system changes | Patch |
+| `ci` | CI configuration | None |
+| `chore` | Maintenance tasks | None |
+
+**Breaking changes:** Add `!` after type or include `BREAKING CHANGE:` in footer.
+
+```bash
+# Examples
+feat: add GitLab provider support
+fix: resolve container startup race condition
+docs: update troubleshooting guide
+feat!: remove deprecated environment variables
+```
 
 ---
 

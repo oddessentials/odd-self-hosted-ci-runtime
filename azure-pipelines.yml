@@ -1,0 +1,85 @@
+# =============================================================================
+# OSCR CI Pipeline - Azure DevOps
+# =============================================================================
+# Automated quality gates for pull requests and main branch pushes.
+# Runs: shellcheck linting, CRLF detection, Docker build verification.
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Quality
+    displayName: Quality Checks
+    jobs:
+      - job: Lint
+        displayName: Shell Script Linting
+        steps:
+          - checkout: self
+
+          - script: |
+              echo "==> Checking for CRLF line endings..."
+              if git ls-files --eol | grep -E 'w/crlf.*\.sh$'; then
+                echo "ERROR: Shell scripts with CRLF detected"
+                exit 1
+              fi
+              echo "==> No CRLF issues found"
+            displayName: Check for CRLF
+
+          - script: |
+              echo "==> Installing shellcheck..."
+              sudo apt-get update && sudo apt-get install -y shellcheck
+              echo "==> Running shellcheck..."
+              find . -name '*.sh' -not -path './node_modules/*' -not -path './.git/*' | xargs shellcheck --shell=bash
+              echo "==> Shellcheck passed"
+            displayName: Run ShellCheck
+
+          - script: |
+              echo "==> Validating script syntax..."
+              bash -n orchestrator/select-provider.sh
+              bash -n scripts/register.sh
+              bash -n scripts/unregister.sh
+              bash -n scripts/healthcheck.sh
+              bash -n providers/github/entrypoint.sh
+              bash -n providers/azure-devops/entrypoint.sh
+              echo "==> All scripts have valid syntax"
+            displayName: Validate Script Syntax
+
+  - stage: Build
+    displayName: Docker Build
+    dependsOn: Quality
+    jobs:
+      - job: BuildGitHub
+        displayName: Build GitHub Runner Image
+        steps:
+          - checkout: self
+
+          - task: Docker@2
+            displayName: Build GitHub image
+            inputs:
+              command: build
+              dockerfile: providers/github/Dockerfile
+              buildContext: providers/github
+              tags: oscr-github:test
+
+      - job: BuildAzure
+        displayName: Build Azure DevOps Agent Image
+        steps:
+          - checkout: self
+
+          - task: Docker@2
+            displayName: Build Azure DevOps image
+            inputs:
+              command: build
+              dockerfile: providers/azure-devops/Dockerfile
+              buildContext: providers/azure-devops
+              tags: oscr-azure-devops:test

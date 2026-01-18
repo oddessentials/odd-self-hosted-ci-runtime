@@ -1,0 +1,185 @@
+# =============================================================================
+# OSCR Docker Image Publishing
+# =============================================================================
+# Automatically builds and publishes container images to Docker Hub.
+#
+# Triggers:
+#   - Push to main when providers/** or scripts/** change
+#   - Called by release workflow with semver version
+#   - Manual workflow_dispatch
+#
+# Images published:
+#   - oddessentials/oscr-github:latest, :v1.2.3, :sha-xxx
+#   - oddessentials/oscr-azure-devops:latest, :v1.2.3, :sha-xxx
+#
+# Prerequisites:
+#   - DOCKERHUB_USERNAME secret configured
+#   - DOCKERHUB_TOKEN secret configured (access token, not password)
+
+name: Publish Docker Images
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'providers/**'
+      - 'scripts/**'
+  workflow_call:
+    inputs:
+      version:
+        description: 'Semantic version to tag images with (e.g., 1.2.3)'
+        required: false
+        type: string
+  workflow_dispatch:
+    inputs:
+      force_publish:
+        description: 'Force publish all images'
+        required: false
+        default: 'false'
+        type: boolean
+      version:
+        description: 'Version tag (e.g., 1.2.3) - leave empty for latest only'
+        required: false
+        type: string
+
+env:
+  REGISTRY: docker.io
+  GITHUB_IMAGE: oddessentials/oscr-github
+  AZURE_IMAGE: oddessentials/oscr-azure-devops
+
+jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    # Skip change detection when called with a version (release workflow)
+    if: inputs.version == ''
+    outputs:
+      github: ${{ steps.filter.outputs.github }}
+      azure: ${{ steps.filter.outputs.azure }}
+      scripts: ${{ steps.filter.outputs.scripts }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            github:
+              - 'providers/github/**'
+            azure:
+              - 'providers/azure-devops/**'
+            scripts:
+              - 'scripts/**'
+
+  publish-github:
+    name: Publish GitHub Runner
+    runs-on: ubuntu-latest
+    needs: changes
+    # Run if: version provided (release), or files changed, or force publish
+    if: |
+      always() &&
+      (inputs.version != '' ||
+       needs.changes.outputs.github == 'true' ||
+       needs.changes.outputs.scripts == 'true' ||
+       github.event.inputs.force_publish == 'true')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.GITHUB_IMAGE }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value=v${{ inputs.version }},enable=${{ inputs.version != '' }}
+            type=sha,prefix=
+            type=raw,value={{date 'YYYYMMDD'}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: providers/github
+          file: providers/github/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Summary
+        run: |
+          echo "### GitHub Runner Image Published" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tags:**" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  publish-azure:
+    name: Publish Azure DevOps Agent
+    runs-on: ubuntu-latest
+    needs: changes
+    # Run if: version provided (release), or files changed, or force publish
+    if: |
+      always() &&
+      (inputs.version != '' ||
+       needs.changes.outputs.azure == 'true' ||
+       needs.changes.outputs.scripts == 'true' ||
+       github.event.inputs.force_publish == 'true')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.AZURE_IMAGE }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value=v${{ inputs.version }},enable=${{ inputs.version != '' }}
+            type=sha,prefix=
+            type=raw,value={{date 'YYYYMMDD'}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: providers/azure-devops
+          file: providers/azure-devops/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Summary
+        run: |
+          echo "### Azure DevOps Agent Image Published" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tags:**" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
