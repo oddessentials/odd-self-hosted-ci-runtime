@@ -5,6 +5,13 @@
 # Downloads the Azure Pipelines agent tarball for offline Docker builds.
 # This script must be run BEFORE docker build to ensure network-independent builds.
 #
+# The agent is downloaded from GitHub releases (this repo), NOT Azure CDN.
+# This avoids DNS issues with vstsagentpackage.azureedge.net in GitHub Actions.
+#
+# To mirror a new agent version:
+#   1. Run the "Mirror Agent" workflow (workflow_dispatch)
+#   2. Update AGENT_VERSION in CI workflows and Makefile
+#
 # Usage:
 #   AGENT_VERSION=3.248.0 ./scripts/prefetch-ado-agent.sh
 #
@@ -21,7 +28,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 OUTPUT_DIR="${REPO_ROOT}/providers/azure-devops/assets"
 OUTPUT_FILE="${OUTPUT_DIR}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz"
-DOWNLOAD_URL="https://vstsagentpackage.azureedge.net/agent/${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz"
+
+# GitHub releases URL (this repo) - DNS-stable alternative to Azure CDN
+GITHUB_REPO="${GITHUB_REPOSITORY:-oddessentials/odd-self-hosted-ci-runtime}"
+DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/releases/download/agent-v${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz"
 
 # -----------------------------------------------------------------------------
 # Logging
@@ -48,7 +58,7 @@ main() {
     fi
 
     # Download with retries
-    log_info "Downloading..."
+    log_info "Downloading from GitHub releases..."
     if ! curl -fsSL \
         --retry 5 \
         --retry-delay 5 \
@@ -57,6 +67,9 @@ main() {
         "${DOWNLOAD_URL}"; then
         log_error "Failed to download Azure DevOps agent"
         log_error "URL: ${DOWNLOAD_URL}"
+        log_error ""
+        log_error "If the release does not exist, run the 'Mirror Agent' workflow first:"
+        log_error "  gh workflow run mirror-agent.yml -f agent_version=${AGENT_VERSION}"
         rm -f "${OUTPUT_FILE}"
         exit 1
     fi
