@@ -74,31 +74,18 @@ Any change that violates an invariant **must not be merged** without explicit ar
 
 ---
 
-## 5. Build Invariants
+## 5. Extensibility Invariants
 
-15. **Network-Independent Docker Builds**
-    OSCR Docker builds MUST be network-independent with respect to CI runner binaries.
-    External dependencies (agent tarballs) SHALL be prefetched before `docker build`.
-    No DNS hacks, `/etc/resolv.conf` modifications, or `curl --resolve` workarounds.
-
-16. **Pinned and Explicit Versioning**
-    CI runner agent versions MUST be explicitly pinned.
-    Updating the agent version requires updating only `AGENT_VERSION` and running prefetch.
-
----
-
-## 6. Extensibility Invariants
-
-17. **Provider Isolation by Convention**
+15. **Provider Isolation by Convention**
     Each provider implementation MUST live entirely under `providers/<name>/`.
     Adding a new provider MUST NOT require orchestrator changes.
 
-18. **Documentation Is Part of the Contract**
+16. **Documentation Is Part of the Contract**
     Any new behavior or capability MUST be reflected in documentation in the same change.
 
 ---
 
-## 7. Governance Invariant
+## 6. Governance Invariant
 
-19. **Boring Is a Feature**
+17. **Boring Is a Feature**
     OSCR prioritizes predictability, determinism, and safety over convenience or cleverness.

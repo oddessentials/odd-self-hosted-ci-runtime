@@ -32,10 +32,6 @@ Thumbs.db
 # Docker
 *.log
 
-# Prefetched CI runner binaries (downloaded by scripts/prefetch-*.sh)
-# These are large binaries that must be downloaded before docker build
-providers/azure-devops/assets/*.tar.gz
-
 # Temporary files
 tmp/
 temp/

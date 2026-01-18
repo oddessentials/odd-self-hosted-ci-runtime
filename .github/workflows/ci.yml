@@ -69,22 +69,12 @@ jobs:
       matrix:
         provider: [github, azure-devops]
 
-    env:
-      # Azure Pipelines agent version - update to upgrade agent
-      AGENT_VERSION: '4.266.2'
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      # Prefetch Azure DevOps agent tarball before docker build
-      # This ensures no network dependency for agent binary during build
-      - name: Prefetch Azure DevOps agent
-        if: matrix.provider == 'azure-devops'
-        run: ./scripts/prefetch-ado-agent.sh
 
       - name: Build ${{ matrix.provider }} image
         uses: docker/build-push-action@v6

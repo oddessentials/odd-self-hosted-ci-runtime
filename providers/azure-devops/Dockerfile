@@ -3,18 +3,14 @@
 # =============================================================================
 # Official Azure Pipelines agent in a container with Docker support.
 # Published to: oddessentials/oscr-azure-devops
-#
-# IMPORTANT: This Dockerfile requires the agent tarball to be prefetched.
-# Run `AGENT_VERSION=x.y.z ./scripts/prefetch-ado-agent.sh` before building.
-# The build has NO outbound network dependency for the agent binary.
 
 FROM ubuntu:22.04
 
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Azure Pipelines agent version - must match prefetched tarball
-# Update this and re-run prefetch when upgrading agent version
+# Azure Pipelines agent version
+# Check for latest: https://github.com/microsoft/azure-pipelines-agent/releases
 ARG AGENT_VERSION=4.266.2
 
 # -----------------------------------------------------------------------------
@@ -43,15 +39,14 @@ RUN useradd -m -s /bin/bash agent \
     && usermod -aG docker agent
 
 # -----------------------------------------------------------------------------
-# Install Azure Pipelines agent from prefetched tarball
-# The tarball must exist at assets/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz
-# This is downloaded by scripts/prefetch-ado-agent.sh BEFORE docker build
+# Download and install Azure Pipelines agent
 # -----------------------------------------------------------------------------
 WORKDIR /home/agent
 
-COPY assets/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz /tmp/vsts-agent.tar.gz
-
-RUN tar xzf /tmp/vsts-agent.tar.gz \
+RUN curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors \
+    -o /tmp/vsts-agent.tar.gz \
+    "https://download.agent.dev.azure.com/agent/${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz" \
+    && tar xzf /tmp/vsts-agent.tar.gz \
     && rm /tmp/vsts-agent.tar.gz \
     && chown -R agent:agent /home/agent
 
