@@ -9,8 +9,9 @@ FROM ubuntu:22.04
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Azure Pipelines agent version
+# Azure Pipelines agent version (for documentation - actual tarball is pre-downloaded)
 # Check for latest: https://github.com/microsoft/azure-pipelines-agent/releases
+# NOTE: Keep version in sync with Makefile and .github/workflows/*.yml
 ARG AGENT_VERSION=3.248.0
 
 # -----------------------------------------------------------------------------
@@ -39,16 +40,18 @@ RUN useradd -m -s /bin/bash agent \
     && usermod -aG docker agent
 
 # -----------------------------------------------------------------------------
-# Download and install Azure Pipelines agent
-# Uses Google DNS (8.8.8.8) to resolve Azure CDN - fixes DNS issues in buildx
+# Install Azure Pipelines agent
+# Tarball is pre-downloaded externally to avoid DNS issues in buildx.
+# Local build: run `make download-azure-agent` first, then `make build-azure`
+# CI build: workflow downloads tarball before Docker build step
 # -----------------------------------------------------------------------------
 WORKDIR /home/agent
 
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
-    && curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o vsts-agent.tar.gz \
-    "https://vstsagentpackage.azureedge.net/agent/${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz" \
-    && tar xzf vsts-agent.tar.gz \
-    && rm vsts-agent.tar.gz \
+# Copy pre-downloaded agent tarball (avoids flaky Azure CDN DNS in buildx)
+COPY vsts-agent.tar.gz /tmp/vsts-agent.tar.gz
+
+RUN tar xzf /tmp/vsts-agent.tar.gz \
+    && rm /tmp/vsts-agent.tar.gz \
     && chown -R agent:agent /home/agent
 
 # -----------------------------------------------------------------------------

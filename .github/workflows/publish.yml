@@ -140,6 +140,9 @@ jobs:
        needs.changes.outputs.azure == 'true' ||
        needs.changes.outputs.scripts == 'true' ||
        github.event.inputs.force_publish == 'true')
+    env:
+      # Azure Pipelines agent version - keep in sync with Dockerfile ARG
+      AZURE_AGENT_VERSION: '3.248.0'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -152,6 +155,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Download Azure agent tarball outside Docker build to avoid DNS issues in buildx
+      - name: Download Azure Pipelines agent
+        run: |
+          echo "Downloading Azure Pipelines agent v${AZURE_AGENT_VERSION}..."
+          curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors \
+            -o providers/azure-devops/vsts-agent.tar.gz \
+            "https://vstsagentpackage.azureedge.net/agent/${AZURE_AGENT_VERSION}/vsts-agent-linux-x64-${AZURE_AGENT_VERSION}.tar.gz"
+          ls -lh providers/azure-devops/vsts-agent.tar.gz
 
       - name: Extract metadata
         id: meta
