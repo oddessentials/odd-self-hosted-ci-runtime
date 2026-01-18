@@ -34,6 +34,7 @@ load_env() {
     fi
 
     set -a
+    # shellcheck source=/dev/null
     source "${ENV_FILE}"
     set +a
 }

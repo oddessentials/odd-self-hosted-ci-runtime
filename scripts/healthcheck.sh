@@ -25,6 +25,7 @@ NC='\033[0m'
 # -----------------------------------------------------------------------------
 if [[ -f "${ENV_FILE}" ]]; then
     set -a
+    # shellcheck source=/dev/null
     source "${ENV_FILE}"
     set +a
 else
@@ -48,14 +49,8 @@ check_docker() {
 # Check container status
 # -----------------------------------------------------------------------------
 check_container() {
-    local container_name
-
     case "${CI_PROVIDER:-}" in
-        github)
-            container_name="github-runner"
-            ;;
-        azure-devops)
-            container_name="azure-devops-agent"
+        github|azure-devops)
             ;;
         *)
             echo -e "${RED}[FAIL]${NC} CI_PROVIDER not set or invalid"

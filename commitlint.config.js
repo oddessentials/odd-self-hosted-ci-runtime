@@ -24,8 +24,9 @@ export default {
   rules: {
     // Enforce lowercase for type
     'type-case': [2, 'always', 'lower-case'],
-    // Enforce lowercase for subject
-    'subject-case': [2, 'always', 'lower-case'],
+    // Allow proper nouns and acronyms in subject (e.g., "Docker Hub", "CI")
+    // Conventional Commits spec does not mandate lowercase subjects
+    'subject-case': [0],
     // No period at end of subject
     'subject-full-stop': [2, 'never', '.'],
     // Max 72 chars for subject line

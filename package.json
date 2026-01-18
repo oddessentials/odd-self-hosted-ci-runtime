@@ -1,6 +1,7 @@
 {
   "name": "odd-self-hosted-ci-runtime",
   "version": "0.0.0-semantically-released",
+  "type": "module",
   "private": true,
   "description": "Docker-first, provider-pluggable self-hosted CI runtime",
   "repository": {
