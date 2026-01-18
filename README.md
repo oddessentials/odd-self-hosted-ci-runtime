@@ -140,10 +140,26 @@ See [docs/security.md](docs/security.md) for the full security model.
 - [Usage](docs/usage.md) - Day-to-day operations
 - [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
 
+## Development
+
+OSCR uses a Makefile for consistent development commands:
+
+```bash
+make help          # Show available targets
+make lint          # Run shellcheck on all scripts
+make lint-docker   # Run shellcheck via Docker (no local install)
+make verify        # Run all quality checks
+make build         # Build all Docker images
+make ci            # Full CI pipeline (lint + build)
+```
+
+For contributors, see [CONTRIBUTING.md](CONTRIBUTING.md) for design principles.
+
 ## Project Governance
 
-See [INVARIANTS.md](INVARIANTS.md) for non-negotiable design constraints.
+- [INVARIANTS.md](INVARIANTS.md) - Non-negotiable design constraints
+- [SPEC.md](SPEC.md) - Technical specification
 
 ## License
 
-MIT
+[MIT](LICENSE)

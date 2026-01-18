@@ -1,0 +1,39 @@
+# =============================================================================
+# Docker Ignore for OSCR
+# =============================================================================
+# Exclude files not needed in Docker build context.
+
+# Git
+.git
+.gitattributes
+.gitignore
+
+# Documentation (not needed at runtime)
+*.md
+docs/
+SPEC.md
+INVARIANTS.md
+CONTRIBUTING.md
+LICENSE
+
+# Node.js dev tooling
+node_modules/
+package.json
+package-lock.json
+
+# Environment files (secrets should be injected at runtime)
+.env
+.env.*
+!env.example
+
+# IDE and editor files
+.idea/
+.vscode/
+
+# CI configuration
+.github/
+azure-pipelines*.yml
+
+# OS files
+.DS_Store
+Thumbs.db

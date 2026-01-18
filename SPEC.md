@@ -32,7 +32,7 @@ This keeps overhead low.
          Docker
             |
    ┌──────────────────┐
-   │ pscr-orchestrator│  ← thin wrapper
+   │ OSCR Orchestrator│  ← thin wrapper
    └──────────────────┘
             |
    ┌──────────────────────────┐
@@ -52,7 +52,20 @@ This keeps overhead low.
 
 ```
 odd-self-hosted-ci-runtime/
-├─ README.md
+├─ .editorconfig          # Editor consistency settings
+├─ .gitattributes         # Line ending enforcement (critical for .sh files)
+├─ .gitignore             # Ignored files (.env, node_modules, etc.)
+├─ .dockerignore          # Docker build context exclusions
+├─ LICENSE                # MIT license
+├─ Makefile               # Build and quality targets
+├─ README.md              # Quick start and overview
+├─ SPEC.md                # This specification
+├─ INVARIANTS.md          # Non-negotiable design constraints
+├─ CONTRIBUTING.md        # Contributor guidelines
+├─ .github/workflows/
+│  ├─ ci.yml              # Automated quality gates
+│  └─ smoke-test.yml      # Manual runner verification
+├─ azure-pipelines.yml    # Azure DevOps CI pipeline
 ├─ docs/
 │  ├─ architecture.md
 │  ├─ security.md
@@ -198,3 +211,5 @@ This must be enforced via docs + code boundaries.
 6. **One-page Quick Start**
 7. **Troubleshooting guide**
 8. **Smoke test workflow for each provider**
+9. **Automated CI quality gates** (shellcheck, Docker builds)
+10. **Repository standards compliance** (.gitattributes, .gitignore, LICENSE)

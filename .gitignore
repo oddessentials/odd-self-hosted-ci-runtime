@@ -1,0 +1,38 @@
+# =============================================================================
+# Git Ignore for OSCR
+# =============================================================================
+
+# Environment files (contain secrets)
+.env
+.env.local
+.env.*.local
+
+# Node.js (for dev tooling like repo-standards)
+node_modules/
+npm-debug.log*
+
+# OS-generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# Docker
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
