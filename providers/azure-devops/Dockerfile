@@ -40,12 +40,13 @@ RUN useradd -m -s /bin/bash agent \
 
 # -----------------------------------------------------------------------------
 # Download and install Azure Pipelines agent
-# Uses GitHub releases mirror (more reliable in CI than Azure CDN)
+# Uses Google DNS (8.8.8.8) to resolve Azure CDN - fixes DNS issues in buildx
 # -----------------------------------------------------------------------------
 WORKDIR /home/agent
 
-RUN curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o vsts-agent.tar.gz \
-    "https://github.com/microsoft/azure-pipelines-agent/releases/download/v${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz" \
+RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
+    && curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o vsts-agent.tar.gz \
+    "https://vstsagentpackage.azureedge.net/agent/${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz" \
     && tar xzf vsts-agent.tar.gz \
     && rm vsts-agent.tar.gz \
     && chown -R agent:agent /home/agent
