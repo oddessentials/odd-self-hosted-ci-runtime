@@ -80,7 +80,7 @@ docker pull oddessentials/oscr-github:latest
 docker pull oddessentials/oscr-azure-devops:latest
 ```
 
-Available tags: `latest`, `<commit-sha>`, `<YYYYMMDD>`
+Available tags: `latest`, `v1.2.3` (semver), `<commit-sha>`, `<YYYYMMDD>`
 
 ## Compatibility Contract
 

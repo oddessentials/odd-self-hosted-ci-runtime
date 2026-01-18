@@ -62,8 +62,12 @@ odd-self-hosted-ci-runtime/
 ├─ SPEC.md                # This specification
 ├─ INVARIANTS.md          # Non-negotiable design constraints
 ├─ CONTRIBUTING.md        # Contributor guidelines
+├─ .releaserc.json        # Semantic release configuration
+├─ commitlint.config.js   # Conventional commits enforcement
 ├─ .github/workflows/
-│  ├─ ci.yml              # Automated quality gates
+│  ├─ ci.yml              # Automated quality gates + commitlint
+│  ├─ release.yml         # Semantic versioning and GitHub releases
+│  ├─ publish.yml         # Docker Hub image publishing
 │  └─ smoke-test.yml      # Manual runner verification
 ├─ azure-pipelines.yml    # Azure DevOps CI pipeline
 ├─ docs/
