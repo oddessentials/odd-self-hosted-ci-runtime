@@ -32,9 +32,6 @@ Thumbs.db
 # Docker
 *.log
 
-# Downloaded agent tarballs (for CI builds - not committed)
-providers/azure-devops/vsts-agent.tar.gz
-
 # Temporary files
 tmp/
 temp/

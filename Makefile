@@ -56,22 +56,6 @@ verify: format-check lint ## Run all verification checks (used by CI and hooks)
 # Docker Operations
 # =============================================================================
 
-# Azure Pipelines agent version - keep in sync with Dockerfile and workflows
-AZURE_AGENT_VERSION := 3.248.0
-AZURE_AGENT_TARBALL := providers/azure-devops/vsts-agent.tar.gz
-AZURE_AGENT_URL := https://vstsagentpackage.azureedge.net/agent/$(AZURE_AGENT_VERSION)/vsts-agent-linux-x64-$(AZURE_AGENT_VERSION).tar.gz
-
-.PHONY: download-azure-agent
-download-azure-agent: ## Download Azure Pipelines agent tarball (required for build-azure)
-	@if [ ! -f "$(AZURE_AGENT_TARBALL)" ]; then \
-		echo "==> Downloading Azure Pipelines agent v$(AZURE_AGENT_VERSION)..."; \
-		curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors \
-			-o "$(AZURE_AGENT_TARBALL)" "$(AZURE_AGENT_URL)"; \
-		echo "==> Downloaded to $(AZURE_AGENT_TARBALL)"; \
-	else \
-		echo "==> Azure agent tarball already exists"; \
-	fi
-
 .PHONY: build
 build: build-github build-azure ## Build all Docker images
 	@echo "==> Build complete"
@@ -82,7 +66,7 @@ build-github: ## Build GitHub runner image
 	@docker build -t oscr-github:local providers/github
 
 .PHONY: build-azure
-build-azure: download-azure-agent ## Build Azure DevOps agent image
+build-azure: ## Build Azure DevOps agent image (uses multi-stage build)
 	@echo "==> Building Azure DevOps agent image..."
 	@docker build -t oscr-azure-devops:local providers/azure-devops
 

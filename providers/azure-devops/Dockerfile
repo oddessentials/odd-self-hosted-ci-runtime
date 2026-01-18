@@ -3,16 +3,24 @@
 # =============================================================================
 # Official Azure Pipelines agent in a container with Docker support.
 # Published to: oddessentials/oscr-azure-devops
+#
+# Uses multi-stage build to extract agent from Microsoft's official image,
+# avoiding flaky Azure CDN downloads during build.
 
+# -----------------------------------------------------------------------------
+# Stage 1: Extract agent from Microsoft's official image
+# This avoids downloading from vstsagentpackage.azureedge.net which has
+# intermittent DNS resolution issues in CI environments.
+# -----------------------------------------------------------------------------
+FROM mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-22.04 AS agent-source
+
+# -----------------------------------------------------------------------------
+# Stage 2: Build our custom image
+# -----------------------------------------------------------------------------
 FROM ubuntu:22.04
 
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
-
-# Azure Pipelines agent version (for documentation - actual tarball is pre-downloaded)
-# Check for latest: https://github.com/microsoft/azure-pipelines-agent/releases
-# NOTE: Keep version in sync with Makefile and .github/workflows/*.yml
-ARG AGENT_VERSION=3.248.0
 
 # -----------------------------------------------------------------------------
 # Install dependencies
@@ -40,19 +48,11 @@ RUN useradd -m -s /bin/bash agent \
     && usermod -aG docker agent
 
 # -----------------------------------------------------------------------------
-# Install Azure Pipelines agent
-# Tarball is pre-downloaded externally to avoid DNS issues in buildx.
-# Local build: run `make download-azure-agent` first, then `make build-azure`
-# CI build: workflow downloads tarball before Docker build step
+# Copy Azure Pipelines agent from Microsoft's official image
 # -----------------------------------------------------------------------------
 WORKDIR /home/agent
-
-# Copy pre-downloaded agent tarball (avoids flaky Azure CDN DNS in buildx)
-COPY vsts-agent.tar.gz /tmp/vsts-agent.tar.gz
-
-RUN tar xzf /tmp/vsts-agent.tar.gz \
-    && rm /tmp/vsts-agent.tar.gz \
-    && chown -R agent:agent /home/agent
+COPY --from=agent-source /azp/agent/ /home/agent/
+RUN chown -R agent:agent /home/agent
 
 # -----------------------------------------------------------------------------
 # Setup workspace
