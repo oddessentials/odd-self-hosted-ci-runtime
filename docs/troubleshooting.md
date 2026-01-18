@@ -262,7 +262,7 @@ GitHub:
 Azure DevOps:
 - `dev.azure.com` (443)
 - `*.visualstudio.com` (443)
-- `vstsagentpackage.azureedge.net` (443)
+- `download.agent.dev.azure.com` (443)
 
 ### Performance Issues
 

@@ -133,7 +133,7 @@ Edit the Dockerfile to update the runner version:
 ARG RUNNER_VERSION=2.321.0  # Update this
 
 # providers/azure-devops/Dockerfile
-ARG AGENT_VERSION=3.248.0   # Update this
+ARG AGENT_VERSION=4.266.2   # Update this
 ```
 
 Then rebuild:
