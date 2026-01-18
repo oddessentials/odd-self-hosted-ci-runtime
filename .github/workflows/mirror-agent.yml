@@ -33,12 +33,12 @@ jobs:
       contents: write
 
     steps:
-      - name: Download from Azure CDN
+      - name: Download from Microsoft
         run: |
           echo "Downloading Azure Pipelines agent v${AGENT_VERSION}..."
           curl -fsSL --retry 5 --retry-delay 10 --retry-all-errors \
             -o "vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz" \
-            "https://vstsagentpackage.azureedge.net/agent/${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz"
+            "https://download.agent.dev.azure.com/agent/${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz"
           ls -lh "vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz"
 
       - name: Verify download

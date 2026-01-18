@@ -142,7 +142,7 @@ jobs:
        github.event.inputs.force_publish == 'true')
     env:
       # Azure Pipelines agent version - update to upgrade agent
-      AGENT_VERSION: '3.248.0'
+      AGENT_VERSION: '4.266.2'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

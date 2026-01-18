@@ -15,7 +15,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Azure Pipelines agent version - must match prefetched tarball
 # Update this and re-run prefetch when upgrading agent version
-ARG AGENT_VERSION=3.248.0
+ARG AGENT_VERSION=4.266.2
 
 # -----------------------------------------------------------------------------
 # Install dependencies

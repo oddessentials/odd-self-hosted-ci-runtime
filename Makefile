@@ -57,7 +57,7 @@ verify: format-check lint ## Run all verification checks (used by CI and hooks)
 # =============================================================================
 
 # Azure Pipelines agent version - update to upgrade agent
-AGENT_VERSION ?= 3.248.0
+AGENT_VERSION ?= 4.266.2
 export AGENT_VERSION
 
 .PHONY: build
