@@ -56,6 +56,10 @@ verify: format-check lint ## Run all verification checks (used by CI and hooks)
 # Docker Operations
 # =============================================================================
 
+# Azure Pipelines agent version - update to upgrade agent
+AGENT_VERSION ?= 3.248.0
+export AGENT_VERSION
+
 .PHONY: build
 build: build-github build-azure ## Build all Docker images
 	@echo "==> Build complete"
@@ -65,8 +69,12 @@ build-github: ## Build GitHub runner image
 	@echo "==> Building GitHub runner image..."
 	@docker build -t oscr-github:local providers/github
 
+.PHONY: prefetch-azure
+prefetch-azure: ## Prefetch Azure DevOps agent tarball
+	@./scripts/prefetch-ado-agent.sh
+
 .PHONY: build-azure
-build-azure: ## Build Azure DevOps agent image (uses multi-stage build)
+build-azure: prefetch-azure ## Build Azure DevOps agent image (prefetches agent first)
 	@echo "==> Building Azure DevOps agent image..."
 	@docker build -t oscr-azure-devops:local providers/azure-devops
 

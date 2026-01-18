@@ -4,23 +4,18 @@
 # Official Azure Pipelines agent in a container with Docker support.
 # Published to: oddessentials/oscr-azure-devops
 #
-# Uses multi-stage build to extract agent from Microsoft's official image,
-# avoiding flaky Azure CDN downloads during build.
+# IMPORTANT: This Dockerfile requires the agent tarball to be prefetched.
+# Run `AGENT_VERSION=x.y.z ./scripts/prefetch-ado-agent.sh` before building.
+# The build has NO outbound network dependency for the agent binary.
 
-# -----------------------------------------------------------------------------
-# Stage 1: Extract agent from Microsoft's official image
-# This avoids downloading from vstsagentpackage.azureedge.net which has
-# intermittent DNS resolution issues in CI environments.
-# -----------------------------------------------------------------------------
-FROM mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-22.04 AS agent-source
-
-# -----------------------------------------------------------------------------
-# Stage 2: Build our custom image
-# -----------------------------------------------------------------------------
 FROM ubuntu:22.04
 
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Azure Pipelines agent version - must match prefetched tarball
+# Update this and re-run prefetch when upgrading agent version
+ARG AGENT_VERSION=3.248.0
 
 # -----------------------------------------------------------------------------
 # Install dependencies
@@ -48,11 +43,17 @@ RUN useradd -m -s /bin/bash agent \
     && usermod -aG docker agent
 
 # -----------------------------------------------------------------------------
-# Copy Azure Pipelines agent from Microsoft's official image
+# Install Azure Pipelines agent from prefetched tarball
+# The tarball must exist at assets/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz
+# This is downloaded by scripts/prefetch-ado-agent.sh BEFORE docker build
 # -----------------------------------------------------------------------------
 WORKDIR /home/agent
-COPY --from=agent-source /azp/agent/ /home/agent/
-RUN chown -R agent:agent /home/agent
+
+COPY assets/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz /tmp/vsts-agent.tar.gz
+
+RUN tar xzf /tmp/vsts-agent.tar.gz \
+    && rm /tmp/vsts-agent.tar.gz \
+    && chown -R agent:agent /home/agent
 
 # -----------------------------------------------------------------------------
 # Setup workspace

@@ -140,6 +140,9 @@ jobs:
        needs.changes.outputs.azure == 'true' ||
        needs.changes.outputs.scripts == 'true' ||
        github.event.inputs.force_publish == 'true')
+    env:
+      # Azure Pipelines agent version - update to upgrade agent
+      AGENT_VERSION: '3.248.0'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -152,6 +155,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Prefetch Azure DevOps agent tarball before docker build
+      # This ensures no network dependency for agent binary during build
+      - name: Prefetch Azure DevOps agent
+        run: ./scripts/prefetch-ado-agent.sh
 
       - name: Extract metadata
         id: meta
