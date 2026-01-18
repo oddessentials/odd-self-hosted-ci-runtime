@@ -73,12 +73,14 @@ cd orchestrator/
 
 ## Pre-built Images
 
-Pull from Docker Hub instead of building locally:
+Images are automatically published to Docker Hub when provider files change on main.
 
 ```bash
 docker pull oddessentials/oscr-github:latest
 docker pull oddessentials/oscr-azure-devops:latest
 ```
+
+Available tags: `latest`, `<commit-sha>`, `<YYYYMMDD>`
 
 ## Compatibility Contract
 
