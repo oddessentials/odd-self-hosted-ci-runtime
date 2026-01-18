@@ -1,0 +1,85 @@
+# =============================================================================
+# OSCR Smoke Test - Azure DevOps
+# =============================================================================
+# Manual pipeline to verify self-hosted agent functionality.
+# Configure the pool name below, then run manually from Pipelines.
+
+trigger: none
+pr: none
+
+# Configure your agent pool name here
+pool:
+  name: Default  # Change to your pool name
+  demands:
+    - Agent.OS -equals Linux
+
+stages:
+  - stage: SmokeTest
+    displayName: 'Smoke Test'
+    jobs:
+      - job: RunSmokeTest
+        displayName: 'Run Smoke Test'
+        steps:
+          - script: |
+              echo "=== Agent Information ==="
+              echo "Hostname: $(hostname)"
+              echo "User: $(whoami)"
+              echo "Working Directory: $(pwd)"
+              echo "OS: $(uname -a)"
+              echo ""
+              echo "=== Environment ==="
+              echo "AGENT_NAME: ${AGENT_NAME:-not set}"
+              echo "AGENT_OS: ${AGENT_OS:-not set}"
+              echo "BUILD_SOURCESDIRECTORY: ${BUILD_SOURCESDIRECTORY:-not set}"
+            displayName: 'Agent Information'
+
+          - script: |
+              echo "=== Security Check ==="
+              if [ "$(id -u)" -eq 0 ]; then
+                echo "ERROR: Running as root!"
+                exit 1
+              fi
+              echo "OK: Running as non-root user (uid=$(id -u))"
+            displayName: 'Verify Non-Root Execution'
+
+          - script: |
+              echo "=== Docker Check ==="
+              docker --version
+              docker info --format '{{.ServerVersion}}'
+              echo "OK: Docker is accessible"
+            displayName: 'Verify Docker Access'
+
+          - script: |
+              echo "=== Docker Build Test ==="
+              cat > /tmp/Dockerfile <<'EOF'
+              FROM alpine:latest
+              RUN echo "Hello from OSCR smoke test"
+              EOF
+              docker build -t oscr-smoke-test:latest /tmp
+              echo "OK: Docker build succeeded"
+            displayName: 'Docker Build Test'
+
+          - script: |
+              echo "=== Docker Run Test ==="
+              docker run --rm oscr-smoke-test:latest echo "Container executed successfully"
+              echo "OK: Docker run succeeded"
+            displayName: 'Docker Run Test'
+
+          - script: |
+              echo "=== Cleanup ==="
+              docker rmi oscr-smoke-test:latest || true
+              echo "OK: Cleanup completed"
+            displayName: 'Cleanup'
+
+          - script: |
+              echo ""
+              echo "========================================="
+              echo "  OSCR Smoke Test: PASSED"
+              echo "========================================="
+              echo ""
+              echo "Your self-hosted agent is working correctly."
+              echo ""
+              echo "Agent: $(hostname)"
+              echo "User: $(whoami)"
+              echo "Docker: $(docker --version)"
+            displayName: 'Summary'

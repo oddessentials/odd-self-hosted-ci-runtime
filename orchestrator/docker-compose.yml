@@ -1,0 +1,62 @@
+# =============================================================================
+# OSCR Docker Compose Configuration
+# =============================================================================
+# Do not run this file directly. Use select-provider.sh instead.
+# This file defines service templates for each provider.
+
+services:
+  # ---------------------------------------------------------------------------
+  # GitHub Actions Runner
+  # ---------------------------------------------------------------------------
+  github-runner:
+    image: oddessentials/oscr-github:latest
+    build:
+      context: ../providers/github
+      dockerfile: Dockerfile
+    environment:
+      - GITHUB_PAT=${GITHUB_PAT}
+      - GITHUB_OWNER=${GITHUB_OWNER}
+      - GITHUB_REPO=${GITHUB_REPO:-}
+      - GITHUB_RUNNER_GROUP=${GITHUB_RUNNER_GROUP:-default}
+      - RUNNER_NAME=${RUNNER_NAME:-}
+      - RUNNER_LABELS=${RUNNER_LABELS:-linux,docker,self-hosted}
+      - RUNNER_PERSISTENT=${RUNNER_PERSISTENT:-false}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - runner-work:/home/runner/work
+    networks:
+      - oscr-network
+    restart: unless-stopped
+    profiles:
+      - github
+
+  # ---------------------------------------------------------------------------
+  # Azure DevOps Agent
+  # ---------------------------------------------------------------------------
+  azure-devops-agent:
+    image: oddessentials/oscr-azure-devops:latest
+    build:
+      context: ../providers/azure-devops
+      dockerfile: Dockerfile
+    environment:
+      - ADO_PAT=${ADO_PAT}
+      - ADO_ORG_URL=${ADO_ORG_URL}
+      - ADO_POOL=${ADO_POOL}
+      - RUNNER_NAME=${RUNNER_NAME:-}
+      - RUNNER_PERSISTENT=${RUNNER_PERSISTENT:-false}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - agent-work:/home/agent/work
+    networks:
+      - oscr-network
+    restart: unless-stopped
+    profiles:
+      - azure-devops
+
+volumes:
+  runner-work:
+  agent-work:
+
+networks:
+  oscr-network:
+    driver: bridge
