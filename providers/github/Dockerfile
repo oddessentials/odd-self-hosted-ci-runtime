@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # -----------------------------------------------------------------------------
 # Install Docker CLI (for Docker-in-Docker workflows)
 # -----------------------------------------------------------------------------
-RUN curl -fsSL https://get.docker.com | sh
+RUN curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors https://get.docker.com | sh
 
 # -----------------------------------------------------------------------------
 # Create non-root user
@@ -44,7 +44,7 @@ RUN useradd -m -s /bin/bash runner \
 # -----------------------------------------------------------------------------
 WORKDIR /home/runner
 
-RUN curl -fsSL -o actions-runner.tar.gz \
+RUN curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o actions-runner.tar.gz \
     "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-${RUNNER_ARCH}-${RUNNER_VERSION}.tar.gz" \
     && tar xzf actions-runner.tar.gz \
     && rm actions-runner.tar.gz \
