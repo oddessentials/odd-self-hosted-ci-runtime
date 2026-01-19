@@ -1,4 +1,4 @@
-# Odd Self-Hosted CI Runtime (OSCR)
+# 🐝 Odd Self-Hosted CI Runtime (OSCR)
 
 **Docker-first, provider-pluggable self-hosted CI runtime.**
 
