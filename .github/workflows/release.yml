@@ -54,11 +54,34 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Get latest tag before release
+        id: before
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git tag --sort=-v:refname | head -n1 || echo "")
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+
       - name: Run semantic-release
         id: semantic
-        uses: cycjimmy/semantic-release-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx semantic-release
+
+          # Check for new tag created by semantic-release
+          git fetch --tags
+          NEW_TAG=$(git tag --sort=-v:refname | head -n1 || echo "")
+
+          if [ -n "$NEW_TAG" ] && [ "$NEW_TAG" != "${{ steps.before.outputs.latest_tag }}" ]; then
+            # Extract version without 'v' prefix
+            VERSION="${NEW_TAG#v}"
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
+            echo "New release published: $VERSION"
+          else
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+            echo "No new release published"
+          fi
 
       - name: Summary
         if: steps.semantic.outputs.new_release_published == 'true'
