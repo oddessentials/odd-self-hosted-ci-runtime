@@ -108,6 +108,17 @@ register_runner() {
         log_info "Registering runner for organization: ${config_url}"
     fi
 
+    # Clean up any existing runner configuration to prevent "already configured" errors
+    # This can happen after container restarts or runner auto-updates
+    if [[ -f ".runner" ]]; then
+        log_info "Cleaning up existing runner configuration..."
+        get_removal_token
+        if [[ -n "${REMOVAL_TOKEN:-}" ]]; then
+            ./config.sh remove --token "${REMOVAL_TOKEN}" || true
+        fi
+        rm -f .runner .credentials .credentials_rsaparams .env .path 2>/dev/null || true
+    fi
+
     get_registration_token
 
     ./config.sh \
