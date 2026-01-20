@@ -5,6 +5,12 @@ All notable changes to OSCR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.2.0...v1.3.0) (2026-01-20)
+
+### Features
+
+* add ollama-sidecar network alias + install semgrep ([d327a17](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/d327a173326bb475c16db1304034c760497f80bb))
+
 ## [1.2.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.1.0...v1.2.0) (2026-01-20)
 
 ### Features
