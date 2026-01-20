@@ -53,9 +53,28 @@ services:
     profiles:
       - azure-devops
 
+  # ---------------------------------------------------------------------------
+  # Ollama - Local LLM Inference Server (Optional)
+  # ---------------------------------------------------------------------------
+  # Provides local, air-gapped AI code review via the local_llm agent.
+  # Pre-pull models before use: docker exec oscr-ollama ollama pull codellama:7b
+  ollama:
+    image: ollama/ollama:0.5.5
+    container_name: oscr-ollama
+    volumes:
+      - ollama-models:/root/.ollama
+    networks:
+      - oscr-network
+    restart: unless-stopped
+    profiles:
+      - github
+      - azure-devops
+
 volumes:
   runner-work:
   agent-work:
+  ollama-models:
+
 
 networks:
   oscr-network:
