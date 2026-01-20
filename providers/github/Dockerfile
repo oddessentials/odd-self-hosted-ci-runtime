@@ -33,9 +33,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # -----------------------------------------------------------------------------
 # Install semgrep (static analysis for AI code review)
 # -----------------------------------------------------------------------------
-# Install to /usr/local/bin to ensure it's in PATH for all users/processes
-RUN pip3 install --no-cache-dir semgrep \
-    && ln -sf /usr/local/bin/semgrep /usr/bin/semgrep 2>/dev/null || true
+# Pinned for reproducibility - check https://github.com/semgrep/semgrep/releases
+ARG SEMGREP_VERSION=1.148.0
+RUN pip3 install --no-cache-dir semgrep==${SEMGREP_VERSION}
 
 # -----------------------------------------------------------------------------
 # Install Docker CLI (for Docker-in-Docker workflows)
@@ -77,5 +77,8 @@ RUN chmod +x /entrypoint.sh
 # -----------------------------------------------------------------------------
 USER runner
 WORKDIR /home/runner
+
+# Verify semgrep is accessible as runner user (build-time check)
+RUN semgrep --version || (echo "ERROR: semgrep not accessible as runner user" && exit 1)
 
 ENTRYPOINT ["/entrypoint.sh"]
