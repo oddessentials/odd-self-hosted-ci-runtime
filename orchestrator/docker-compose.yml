@@ -58,13 +58,19 @@ services:
   # ---------------------------------------------------------------------------
   # Provides local, air-gapped AI code review via the local_llm agent.
   # Pre-pull models before use: docker exec oscr-ollama ollama pull codellama:7b
+  #
+  # Network aliases allow both URLs to work:
+  #   - http://ollama:11434 (service name)
+  #   - http://ollama-sidecar:11434 (odd-ai-reviewers default)
   ollama:
     image: ollama/ollama:0.5.5
     container_name: oscr-ollama
     volumes:
       - ollama-models:/root/.ollama
     networks:
-      - oscr-network
+      oscr-network:
+        aliases:
+          - ollama-sidecar
     restart: unless-stopped
     profiles:
       - github

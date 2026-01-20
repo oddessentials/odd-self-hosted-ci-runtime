@@ -31,6 +31,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------------------------------------------------------
+# Install semgrep (static analysis for AI code review)
+# -----------------------------------------------------------------------------
+# Install to /usr/local/bin to ensure it's in PATH for all users/processes
+RUN pip3 install --no-cache-dir semgrep \
+    && ln -sf /usr/local/bin/semgrep /usr/bin/semgrep 2>/dev/null || true
+
+# -----------------------------------------------------------------------------
 # Install Docker CLI (for Docker-in-Docker workflows)
 # -----------------------------------------------------------------------------
 RUN curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors https://get.docker.com | sh
