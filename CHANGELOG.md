@@ -5,6 +5,12 @@ All notable changes to OSCR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.0.0...v1.1.0) (2026-01-20)
+
+### Features
+
+* add python3 and pip to runner images for Semgrep support ([b5b4f3f](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/b5b4f3f156e040093a29f1a33a836da7a095e7ba))
+
 ## 1.0.0 (2026-01-19)
 
 ### Features
