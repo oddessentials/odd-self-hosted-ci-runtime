@@ -5,6 +5,12 @@ All notable changes to OSCR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.3.0...v1.4.0) (2026-01-20)
+
+### Features
+
+* pin semgrep version and add Ollama integration guide ([a856b8c](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/a856b8c129dc775fe7b9cb6c1fb719c658f1a5c5))
+
 ## [1.3.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.2.0...v1.3.0) (2026-01-20)
 
 ### Features
