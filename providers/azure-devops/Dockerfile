@@ -23,6 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     jq \
     libicu70 \
     libssl3 \
+    python3 \
+    python3-pip \
     unzip \
     zip \
     && rm -rf /var/lib/apt/lists/*
