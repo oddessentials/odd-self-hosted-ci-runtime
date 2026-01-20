@@ -5,6 +5,12 @@ All notable changes to OSCR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.1.0...v1.2.0) (2026-01-20)
+
+### Features
+
+* llama to orch ([b9a320e](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/b9a320eea3bf0eac1be762b39c7671d1572886f6))
+
 ## [1.1.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.0.0...v1.1.0) (2026-01-20)
 
 ### Features
