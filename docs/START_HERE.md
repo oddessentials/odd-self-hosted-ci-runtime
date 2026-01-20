@@ -52,12 +52,18 @@ EOF
 
 ## Step 4: Start OSCR with Ollama
 
+### On Linux/macOS:
 ```bash
-# Start runner + Ollama sidecar
 ./select-provider.sh start
+```
+
+### On Windows (PowerShell):
+```powershell
+# Start runner + Ollama sidecar
+docker compose --profile github up -d
 
 # Verify containers are running
-docker ps | grep -E "oscr|ollama"
+docker ps | Select-String "oscr|ollama"
 
 # Pre-pull the model (required for local_llm agent)
 docker exec oscr-ollama ollama pull codellama:7b
@@ -247,8 +253,14 @@ docker exec oscr-ollama ollama list
 
 ## Stopping OSCR
 
+### On Linux/macOS:
 ```bash
 ./select-provider.sh stop
+```
+
+### On Windows (PowerShell):
+```powershell
+docker compose --profile github down
 
 # Remove all data (clean restart)
 docker volume rm orchestrator_runner-work orchestrator_ollama-models
