@@ -178,11 +178,23 @@ If the answer to **any** is "no," the change likely does not belong in OSCR.
 
 ---
 
-## Commit Message Format
+## Pull Request and Commit Conventions
 
-OSCR uses [Conventional Commits](https://www.conventionalcommits.org/) for automated versioning and changelog generation.
+OSCR uses [Conventional Commits](https://www.conventionalcommits.org/) for automated versioning and changelog generation via [semantic-release](https://semantic-release.gitbook.io/).
 
-**Format:** `<type>(<scope>): <description>`
+### How It Works
+
+1. **PR titles must follow Conventional Commits format** — CI validates this automatically
+2. **Individual commits can be informal** — Use "WIP", "fixup", or whatever helps you work
+3. **PRs are squash-merged** — The PR title becomes the final commit message on `main`
+
+This means only the PR title matters for versioning and changelogs. You don't need to rewrite commit history or stress about every commit message during development.
+
+### PR Title Format
+
+```
+<type>(<scope>): <description>
+```
 
 | Type | Description | Version Impact |
 |------|-------------|----------------|
@@ -197,15 +209,24 @@ OSCR uses [Conventional Commits](https://www.conventionalcommits.org/) for autom
 | `ci` | CI configuration | None |
 | `chore` | Maintenance tasks | None |
 
-**Breaking changes:** Add `!` after type or include `BREAKING CHANGE:` in footer.
+**Breaking changes:** Add `!` after type or include `BREAKING CHANGE:` in the PR description.
+
+### Examples
 
 ```bash
-# Examples
+# Valid PR titles
 feat: add GitLab provider support
-fix: resolve container startup race condition
+fix(docker): resolve container startup race condition
 docs: update troubleshooting guide
 feat!: remove deprecated environment variables
+chore(deps): update semantic-release to v24
 ```
+
+### Why This Approach?
+
+- **Reduces friction** — No need to squash/rebase commits manually or craft perfect messages during development
+- **Maintains quality** — The merge commit on `main` is always properly formatted
+- **Enables automation** — semantic-release can reliably parse commit history for versioning
 
 ---
 
