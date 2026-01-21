@@ -57,7 +57,7 @@ services:
   # Ollama - Local LLM Inference Server (Optional)
   # ---------------------------------------------------------------------------
   # Provides local, air-gapped AI code review via the local_llm agent.
-  # Pre-pull models before use: docker exec oscr-ollama ollama pull codellama:7b
+  # Model is automatically pulled and warmed up on startup.
   #
   # Network aliases allow both URLs to work:
   #   - http://ollama:11434 (service name)
@@ -71,6 +71,48 @@ services:
       oscr-network:
         aliases:
           - ollama-sidecar
+    environment:
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-codellama:7b}
+    # Auto-pull and warm up model on startup
+    entrypoint: [ "/bin/sh", "-c" ]
+    command:
+      - |
+        # Start Ollama server in background
+        ollama serve &
+        OLLAMA_PID=$$!
+
+        # Wait for server to be ready with timeout and liveness check
+        echo "[ollama-warmup] Waiting for Ollama server (PID $$OLLAMA_PID)..."
+        TIMEOUT=60
+        ELAPSED=0
+        while ! ollama list > /dev/null 2>&1; do
+          # Check if Ollama process died
+          if ! kill -0 $$OLLAMA_PID 2>/dev/null; then
+            echo "[ollama-warmup] ERROR: Ollama server (PID $$OLLAMA_PID) died unexpectedly"
+            exit 1
+          fi
+          # Check timeout
+          if [ $$ELAPSED -ge $$TIMEOUT ]; then
+            echo "[ollama-warmup] ERROR: Timeout waiting for Ollama server after $${TIMEOUT}s"
+            exit 1
+          fi
+          sleep 2
+          ELAPSED=$$((ELAPSED + 2))
+        done
+        echo "[ollama-warmup] Ollama server ready"
+
+        # Pull model if not present
+        MODEL=$${OLLAMA_MODEL:-codellama:7b}
+        echo "[ollama-warmup] Ensuring model $$MODEL is available..."
+        ollama pull $$MODEL
+
+        # Warm up model with a simple request to load into memory
+        echo "[ollama-warmup] Warming up model $$MODEL..."
+        echo "Hello" | ollama run $$MODEL --nowordwrap 2>/dev/null || true
+        echo "[ollama-warmup] Model $$MODEL ready and warmed up"
+
+        # Keep server running (wait for the background serve process)
+        wait $$OLLAMA_PID
     restart: unless-stopped
     profiles:
       - github
