@@ -146,8 +146,11 @@ gating:
 |-------|------------------|------------------|-------|
 | `semgrep` | None | None | Static analysis, always available |
 | `local_llm` | None | `OLLAMA_BASE_URL` | Uses Ollama sidecar for local inference |
-| `opencode` | `OPENAI_API_KEY` **or** `ANTHROPIC_API_KEY` | Optional: `MODEL` | Provider-agnostic (OpenAI, Claude, etc.) |
-| `pr_agent` | `OPENAI_API_KEY` | Optional: `OPENAI_MODEL` | OpenAI-only |
+| `opencode` | `OPENAI_API_KEY` **or** `ANTHROPIC_API_KEY` | Optional: `MODEL` | Provider-agnostic (OpenAI, Claude) |
+| `pr_agent` | `OPENAI_API_KEY` **or** Azure bundle | Optional: `MODEL` | OpenAI or Azure OpenAI |
+| `ai_semantic_review` | `OPENAI_API_KEY` **or** Azure bundle | Optional: `MODEL` | OpenAI or Azure OpenAI |
+
+> **Azure OpenAI Bundle**: When using Azure OpenAI, you must set all three: `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT`.
 
 > ⚠️ **Preflight Validation**: If an agent is enabled but required secrets are missing, the job will **fail immediately** with a clear error message.
 
