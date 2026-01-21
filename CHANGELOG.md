@@ -5,6 +5,12 @@ All notable changes to OSCR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.2](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.4.1...v1.4.2) (2026-01-21)
+
+### Bug Fixes
+
+* auto-pull and warm up Ollama model on sidecar startup ([c785b08](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/c785b0867b60c01e0b8a73d253d97b1408d81810))
+
 ## [1.4.1](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.4.0...v1.4.1) (2026-01-20)
 
 ### Bug Fixes
