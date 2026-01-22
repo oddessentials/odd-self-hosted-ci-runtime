@@ -5,6 +5,16 @@ All notable changes to OSCR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.4.2...v1.5.0) (2026-01-22)
+
+### ⚠ BREAKING CHANGES
+
+* **azure-devops:** None - all changes are additive
+
+### Features
+
+* **azure-devops:** add enterprise parity with GitHub provider ([1677681](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/1677681da5a5bc5aaa2ec73dbb6c6b1292c5e301))
+
 ## [1.4.2](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.4.1...v1.4.2) (2026-01-21)
 
 ### Bug Fixes
