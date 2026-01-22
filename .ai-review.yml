@@ -1,0 +1,23 @@
+version: 1
+trusted_only: true
+
+passes:
+  # Static analysis only - no API keys required
+  - name: static
+    agents: [semgrep]
+    enabled: true
+    required: true # Fail the check if semgrep finds issues
+
+limits:
+  max_files: 50 # Skip very large PRs
+  max_diff_lines: 2000 # Truncate large diffs
+
+reporting:
+  github:
+    mode: checks_and_comments # Both check annotations and PR comments
+    max_inline_comments: 20 # Limit comment spam
+    summary: true # Post summary comment
+
+gating:
+  enabled: false # Set to true to block merging on errors
+  fail_on_severity: error # Only block on errors, not warnings

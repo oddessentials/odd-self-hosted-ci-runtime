@@ -275,6 +275,20 @@ jobs:
       - run: docker run --rm -v $(pwd):/app -w /app node:18 npm test
 ```
 
+## Reaching Services on the Host Machine
+
+If your CI job needs to reach services running on the runner's host machine (e.g., a dev server, a database, or local E2E services), use **`host.docker.internal`** instead of `localhost`.
+
+### Why?
+Inside the runner container, `localhost` refers to the container itself. OSCR automatically maps `host.docker.internal` to the host's internal IP address using the `host-gateway` feature.
+
+### Example (Azure Pipelines)
+```yaml
+- script: npm run test:e2e
+  env:
+    API_URL: http://host.docker.internal:3000
+```
+
 ## Offline Operation
 
 If the runner goes offline:

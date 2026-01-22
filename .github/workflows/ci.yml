@@ -38,7 +38,9 @@ jobs:
           #   fix(router): sanitize environment variables
           #   feat!: drop legacy configuration support
 
-          if echo "$TITLE" | grep -Eq '^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-zA-Z0-9._-]+\))?(!)?: .+'; then
+          PATTERN='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)'
+          PATTERN+='(\([a-zA-Z0-9._-]+\))?(!)?: .+'
+          if echo "$TITLE" | grep -Eq "$PATTERN"; then
             echo "✅ PR title follows Conventional Commits format"
           else
             echo "❌ PR title must follow Conventional Commits format"
@@ -70,6 +72,11 @@ jobs:
             exit 1
           fi
           echo "==> No CRLF issues found"
+
+      - name: Lint YAML files
+        run: |
+          pip install --quiet yamllint
+          npm run lint:yaml
 
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@2.0.0

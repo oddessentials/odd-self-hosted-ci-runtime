@@ -125,6 +125,12 @@ main() {
     log_info "Agent name: ${AGENT_NAME}"
     log_info "Pool: ${ADO_POOL}"
 
+    # Ensure agent can access the Docker socket (Fixes permission denied errors in E2E)
+    if [ -S /var/run/docker.sock ]; then
+        log_info "Fixing Docker socket permissions..."
+        sudo chmod 666 /var/run/docker.sock
+    fi
+
     validate_config
 
     # Setup signal handlers for graceful shutdown

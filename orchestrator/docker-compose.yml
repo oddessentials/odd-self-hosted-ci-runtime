@@ -24,6 +24,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - runner-work:/home/runner/work
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - oscr-network
     restart: unless-stopped
@@ -49,6 +51,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - agent-work:/home/agent/work
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - oscr-network
     restart: unless-stopped
@@ -76,7 +80,7 @@ services:
     environment:
       - OLLAMA_MODEL=${OLLAMA_MODEL:-codellama:7b}
     # Auto-pull and warm up model on startup
-    entrypoint: [ "/bin/sh", "-c" ]
+    entrypoint: ["/bin/sh", "-c"]
     command:
       - |
         # Start Ollama server in background

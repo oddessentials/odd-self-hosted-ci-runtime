@@ -28,6 +28,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
     unzip \
     zip \
+    sudo \
+    # Playwright dependencies
+    libnss3 \
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2 \
+    libpango-1.0-0 \
+    libcairo2 \
     && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------------------------------------------------------
@@ -46,7 +63,8 @@ RUN curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors https://get.docker.c
 # Create non-root user
 # -----------------------------------------------------------------------------
 RUN useradd -m -s /bin/bash runner \
-    && usermod -aG docker runner
+    && usermod -aG docker runner \
+    && echo "runner ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # -----------------------------------------------------------------------------
 # Download and install GitHub Actions runner

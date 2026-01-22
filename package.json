@@ -11,6 +11,8 @@
   "license": "MIT",
   "scripts": {
     "lint:commits": "commitlint --from HEAD~1 --to HEAD",
+    "lint:yaml": "yamllint -c .yamllint.yml .github/workflows/ci.yml .github/workflows/publish.yml .github/workflows/release.yml .github/workflows/smoke-test.yml azure-pipelines.yml azure-pipelines-smoke-test.yml orchestrator/docker-compose.yml",
+    "lint": "npm run lint:yaml",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run"
   },

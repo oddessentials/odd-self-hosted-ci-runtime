@@ -173,6 +173,12 @@ main() {
     log_info "Runner name: ${RUNNER_NAME}"
     log_info "Labels: ${RUNNER_LABELS}"
 
+    # Ensure runner can access the Docker socket (Fixes permission denied errors in E2E)
+    if [ -S /var/run/docker.sock ]; then
+        log_info "Fixing Docker socket permissions..."
+        sudo chmod 666 /var/run/docker.sock
+    fi
+
     validate_config
 
     # Setup signal handlers for graceful shutdown

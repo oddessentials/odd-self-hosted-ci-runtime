@@ -1,0 +1,40 @@
+---
+# =============================================================================
+# OSCR YAML Linting Configuration
+# =============================================================================
+# Enforces consistent YAML style for GitHub Actions and Azure DevOps pipelines.
+# Run: yamllint -c .yamllint.yml .github/workflows/*.yml azure-pipelines*.yml
+
+extends: default
+
+rules:
+  # Allow longer lines for workflow files (URLs, descriptions)
+  line-length:
+    max: 120
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+
+  # Boolean values must be unquoted (true/false)
+  truthy:
+    allowed-values: ['true', 'false', 'on', 'off']
+    check-keys: false
+
+  # Comments spacing
+  comments:
+    min-spaces-from-content: 1
+
+  # 2-space indentation
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+
+  # Allow document start marker to be optional
+  document-start: disable
+
+  # Relaxed for multi-line strings
+  comments-indentation: disable
+
+  # Allow flexible bracket spacing (common in docker-compose files)
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
