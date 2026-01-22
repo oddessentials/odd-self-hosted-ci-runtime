@@ -30,6 +30,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------------------------------------------------------
+# Install semgrep (static analysis for AI code review)
+# -----------------------------------------------------------------------------
+# Pinned for reproducibility - check https://github.com/semgrep/semgrep/releases
+ARG SEMGREP_VERSION=1.148.0
+RUN pip3 install --no-cache-dir semgrep==${SEMGREP_VERSION}
+
+# -----------------------------------------------------------------------------
 # Install Docker CLI (for Docker-in-Docker workflows)
 # -----------------------------------------------------------------------------
 RUN curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors https://get.docker.com | sh
@@ -69,5 +76,8 @@ RUN chmod +x /entrypoint.sh
 # -----------------------------------------------------------------------------
 USER agent
 WORKDIR /home/agent
+
+# Verify semgrep is accessible as agent user (build-time check)
+RUN semgrep --version || (echo "ERROR: semgrep not accessible as agent user" && exit 1)
 
 ENTRYPOINT ["/entrypoint.sh"]

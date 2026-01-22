@@ -153,6 +153,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # Note: For Azure Container Registry (enterprise add-on), see docs/providers.md
+      # ACR publishing can be enabled by adding a separate job with ACR credentials
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -183,3 +186,4 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+
