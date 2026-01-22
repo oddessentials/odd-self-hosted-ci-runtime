@@ -161,13 +161,10 @@ permission denied while trying to connect to the Docker daemon socket
 ```
 
 **Solution:**
-```bash
-# Fix socket permissions
-sudo chmod 666 /var/run/docker.sock
-
-# Or add user to docker group (requires logout/login)
-sudo usermod -aG docker $USER
-```
+OSCR automatically attempts to fix this in the entrypoint via `sudo chmod 666 /var/run/docker.sock`. If you still see this:
+1. Ensure `sudo` is installed in your custom image.
+2. Ensure the user has passwordless sudo access (configured by default in OSCR).
+3. If running on Linux, verify the host user is in the `docker` group.
 
 ### Job Execution Issues
 
@@ -246,6 +243,22 @@ docker compose -f docker-compose.yml --profile github exec github-runner ping gi
      - 8.8.8.8
      - 8.8.4.4
    ```
+
+#### Cannot reach services on the host machine
+
+**Symptom:**
+Jobs or tests fail to connect to `localhost` ports even though services are running on the host (e.g., E2E test services).
+
+**Cause:**
+Inside a container, `localhost` refers to the container itself, not the host machine.
+
+**Solution:**
+Use **`host.docker.internal`** instead of `localhost`. OSCR captures the host gateway automatically in its `docker-compose.yml`.
+
+**Example:**
+Change `http://localhost:3000` to `http://host.docker.internal:3000`.
+
+---
 
 #### Firewall blocking connections
 

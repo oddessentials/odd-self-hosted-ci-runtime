@@ -94,9 +94,10 @@ Helper scripts for common operations:
 2. Orchestrator validates .env configuration
 3. Orchestrator launches provider container via docker compose
 4. Container entrypoint.sh executes:
-   a. Requests registration token from provider API
-   b. Runs official runner config.sh
-   c. Starts official runner run.sh
+   a. Ensures non-root user access to Docker socket (via `sudo chmod 666`)
+   b. Requests registration token from provider API
+   c. Runs official runner config.sh
+   d. Starts official runner run.sh
 5. Runner connects to provider cloud and polls for jobs
 ```
 
@@ -155,6 +156,7 @@ Default: **Bridge network** (`oscr-network`)
 - Containers can reach external networks
 - Containers are isolated from host network
 - Inter-container communication is possible (for multi-runner setups)
+- **Host machine access**: Supported via `host.docker.internal` (mapped to `host-gateway`)
 
 Alternative: **Host network** (opt-in)
 

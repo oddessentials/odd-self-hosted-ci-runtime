@@ -10,6 +10,12 @@
 
 Run your CI pipelines at zero cloud cost using your own hardware.
 
+## Requirements
+
+- **Docker Engine 20.10+**: Required for cross-platform networking support (`host-gateway`).
+- **Docker Compose**: Required to run the orchestrator.
+- **Git**: For cloning and repository management.
+
 ## Features
 
 - **Zero cloud cost** - Run CI on your existing infrastructure

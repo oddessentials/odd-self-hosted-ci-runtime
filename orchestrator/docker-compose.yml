@@ -24,6 +24,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - runner-work:/home/runner/work
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - oscr-network
     restart: unless-stopped
@@ -49,6 +51,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - agent-work:/home/agent/work
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - oscr-network
     restart: unless-stopped

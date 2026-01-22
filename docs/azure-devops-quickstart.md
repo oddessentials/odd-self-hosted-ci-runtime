@@ -8,7 +8,7 @@ Complete guide to running AI-powered code reviews on your Azure DevOps repositor
 
 ## Prerequisites
 
-- Docker Desktop running
+- **Docker Engine 20.10+** (Docker Desktop recommended)
 - Azure DevOps account with admin access to an Agent Pool
 - Git installed locally
 
@@ -63,6 +63,10 @@ AGENT_LABELS=linux,docker,self-hosted,ai-review
 ---
 
 ## Step 4: Start OSCR
+
+```
+cd odd-self-hosted-ci-runtime/orchestrator
+```
 
 ### On Linux/macOS:
 ```bash
@@ -168,6 +172,11 @@ stages:
             displayName: Run AI Review
             env:
               OLLAMA_BASE_URL: http://ollama-sidecar:11434
+
+> [!TIP]
+> **Networking Pro-Tip**: If your pipeline needs to reach services running on your local machine (like a database or dev server), use **`http://host.docker.internal:{port}`** instead of `localhost`. 
+> 
+> Inside the runner container, `localhost` refers to the container itself. `host.docker.internal` is mapped to your host machine automatically by OSCR.
 ```
 
 ---
