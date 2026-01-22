@@ -2,6 +2,8 @@
 
 Complete guide to running AI-powered code reviews on your repository using OSCR (Odd Self-hosted CI Runtime).
 
+> 💡 **Using Azure DevOps?** See [azure-devops-quickstart.md](./azure-devops-quickstart.md) for ADO-specific setup instructions.
+
 ## Prerequisites
 
 - Docker Desktop running

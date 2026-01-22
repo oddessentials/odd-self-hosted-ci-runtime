@@ -28,10 +28,17 @@ help: ## Show this help message
 # =============================================================================
 
 .PHONY: lint
-lint: ## Run shellcheck on all shell scripts
+lint: lint-shell lint-yaml ## Run all linters
+
+.PHONY: lint-shell
+lint-shell: ## Run shellcheck on all shell scripts
 	@echo "==> Running shellcheck..."
 	@shellcheck --shell=bash $(SHELL_SCRIPTS)
 	@echo "==> Shellcheck passed"
+
+.PHONY: lint-yaml
+lint-yaml: ## Run yamllint on YAML files (cross-platform via npm)
+	@npm run lint:yaml --silent
 
 .PHONY: lint-docker
 lint-docker: ## Run shellcheck via Docker (no local install required)

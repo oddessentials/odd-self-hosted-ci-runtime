@@ -36,7 +36,7 @@ on:
       force_publish:
         description: 'Force publish all images'
         required: false
-        default: 'false'
+        default: false
         type: boolean
       version:
         description: 'Version tag (e.g., 1.2.3) - leave empty for latest only'
@@ -186,4 +186,3 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-

@@ -36,6 +36,11 @@ stages:
             displayName: Check for CRLF
 
           - script: |
+              pip install --quiet yamllint
+              npm run lint:yaml
+            displayName: Lint YAML Files
+
+          - script: |
               echo "==> Installing shellcheck..."
               sudo apt-get update && sudo apt-get install -y shellcheck
               echo "==> Running shellcheck..."
