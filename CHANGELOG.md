@@ -5,6 +5,16 @@ All notable changes to OSCR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.6.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.5.0...v1.6.0) (2026-01-22)
+
+### Features
+
+* implement cross-platform YAML linting and ADO onboarding docs ([adebc8f](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/adebc8fd1eb6daebcdd06a3dfac0de5c22896ad9))
+
+### Bug Fixes
+
+* azure example ([4697e15](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/4697e156a4353f0dcb4bf4d98b53dc01baa91bb9))
+
 ## [1.5.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.4.2...v1.5.0) (2026-01-22)
 
 ### ⚠ BREAKING CHANGES
