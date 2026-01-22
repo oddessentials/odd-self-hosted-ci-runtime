@@ -65,6 +65,23 @@ register_agent() {
         rm -f .agent .credentials .credentials_rsaparams 2>/dev/null || true
     fi
 
+    # CRITICAL: Create .capabilities file BEFORE config.sh runs
+    # Azure agent scans for capabilities during "Scanning for tool capabilities" phase
+    # Each label becomes an individual user capability for demands matching
+    log_info "Creating user capabilities file..."
+    local capabilities_file=".capabilities"
+    : > "${capabilities_file}"  # Create/truncate file
+    
+    IFS=',' read -ra labels <<< "${AGENT_LABELS}"
+    for label in "${labels[@]}"; do
+        # Trim whitespace
+        label=$(echo "${label}" | xargs)
+        if [[ -n "${label}" ]]; then
+            echo "${label}=true" >> "${capabilities_file}"
+            log_info "  Capability: ${label}"
+        fi
+    done
+
     # Build config command with optional project scoping
     local config_args=(
         --url "${ADO_ORG_URL}"
