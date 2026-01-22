@@ -114,6 +114,7 @@ The Azure DevOps provider uses the official [Azure Pipelines Agent](https://gith
 | Image | `oddessentials/oscr-azure-devops` |
 | User | `agent` (non-root) |
 | Workdir | `/home/agent/work` |
+| Semgrep | Preinstalled (for AI code review) |
 
 ### Configuration
 
@@ -123,22 +124,39 @@ The Azure DevOps provider uses the official [Azure Pipelines Agent](https://gith
 | `ADO_PAT` | Yes | Personal Access Token |
 | `ADO_ORG_URL` | Yes | Organization URL |
 | `ADO_POOL` | Yes | Agent pool name |
+| `ADO_PROJECT` | No | Project name (omit for org-level agent) |
+| `AGENT_LABELS` | No | Comma-separated capabilities (default: `linux,docker,self-hosted`) |
 | `RUNNER_NAME` | No | Custom agent name (default: hostname) |
 
 ### PAT Scopes
 
 - `Agent Pools (Read & manage)` - Required for registration
 
-### Agent Pools
+### Agent Scopes
 
-The agent registers to a specific pool:
+#### Organization Agent (Default)
+
+Registers to a pool visible to all projects:
 
 ```bash
 ADO_ORG_URL=https://dev.azure.com/myorg
 ADO_POOL=Default
+# ADO_PROJECT is not set
 ```
 
-View pools in: Organization Settings > Agent pools
+The agent appears in: Organization Settings > Agent pools
+
+#### Project Agent
+
+Registers to a pool visible only to a specific project:
+
+```bash
+ADO_ORG_URL=https://dev.azure.com/myorg
+ADO_POOL=Default
+ADO_PROJECT=MyProject
+```
+
+The agent appears in: Project Settings > Agent pools
 
 ### Pipeline Configuration
 
@@ -152,7 +170,7 @@ steps:
   - script: echo "Running on self-hosted agent"
 ```
 
-Target with demands:
+Target with demands (matches AGENT_LABELS):
 
 ```yaml
 pool:
@@ -160,15 +178,33 @@ pool:
   demands:
     - Agent.OS -equals Linux
     - docker
+    - gpu  # Matches if AGENT_LABELS includes 'gpu'
 ```
 
 ### Capabilities
 
-The agent automatically reports capabilities:
+The agent automatically reports system capabilities plus custom labels from `AGENT_LABELS`:
+
 - `Agent.OS`: Linux
 - Docker-related capabilities (if Docker is available)
+- Custom capabilities from `AGENT_LABELS` (e.g., `gpu=true`, `cuda=true`)
 
-Add custom capabilities in the pool settings or via environment variables.
+Example:
+```bash
+AGENT_LABELS=linux,docker,self-hosted,gpu,cuda
+```
+
+### Ephemeral Mode
+
+By default, the agent:
+- Auto-registers on container start
+- Auto-unregisters on container stop
+- Cleans up stale configuration on restart
+
+To disable (not recommended):
+```bash
+RUNNER_PERSISTENT=true
+```
 
 ---
 

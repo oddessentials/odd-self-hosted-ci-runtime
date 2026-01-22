@@ -42,6 +42,8 @@ services:
       - ADO_PAT=${ADO_PAT}
       - ADO_ORG_URL=${ADO_ORG_URL}
       - ADO_POOL=${ADO_POOL}
+      - ADO_PROJECT=${ADO_PROJECT:-}
+      - AGENT_LABELS=${AGENT_LABELS:-linux,docker,self-hosted}
       - RUNNER_NAME=${RUNNER_NAME:-}
       - RUNNER_PERSISTENT=${RUNNER_PERSISTENT:-false}
     volumes:
