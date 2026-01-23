@@ -5,6 +5,12 @@ All notable changes to OSCR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.7.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.6.1...v1.7.0) (2026-01-23)
+
+### Features
+
+* add gpu ([4b89400](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/4b89400d09854d223b198d677ae6d0229218b50b))
+
 ## [1.6.1](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.6.0...v1.6.1) (2026-01-23)
 
 ### Bug Fixes
