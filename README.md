@@ -99,6 +99,15 @@ docker pull oddessentials/oscr-github:latest
 docker pull oddessentials/oscr-azure-devops:latest
 ```
 
+### Docker Hub
+
+OSCR publishes provider-specific runtime images to Docker Hub so you can pull a
+ready-to-run container without building locally. Each image is tuned for its CI
+provider and matches the orchestrator expectations.
+
+- [`oddessentials/oscr-github`](https://hub.docker.com/r/oddessentials/oscr-github) - GitHub Actions runner image for self-hosted GitHub workflows.
+- [`oddessentials/oscr-azure-devops`](https://hub.docker.com/r/oddessentials/oscr-azure-devops) - Azure DevOps agent image for self-hosted Azure pipelines.
+
 Available tags: `latest`, `v1.2.3` (semver), `<commit-sha>`, `<YYYYMMDD>`
 
 ## Compatibility Contract
