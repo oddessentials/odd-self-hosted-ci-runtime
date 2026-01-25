@@ -17,13 +17,13 @@
 
 Run your CI pipelines at zero cloud cost using your own hardware.
 
-## Requirements
+## 📋 Requirements
 
 - **Docker Engine 20.10+**: Required for cross-platform networking support (`host-gateway`).
 - **Docker Compose**: Required to run the orchestrator.
 - **Git**: For cloning and repository management.
 
-## Features
+## ✨ Features
 
 - **Zero cloud cost** - Run CI on your existing infrastructure
 - **Provider-pluggable** - GitHub Actions and Azure DevOps support
@@ -31,7 +31,7 @@ Run your CI pipelines at zero cloud cost using your own hardware.
 - **Docker-first** - Host OS agnostic, Linux containers only
 - **Minimal workflow changes** - Just update `runs-on` in your YAML
 
-## Quick Start
+## 🚀 Quick Start
 
 ```bash
 # 1. Clone the repository
@@ -50,7 +50,7 @@ cp env.example .env
 # To:     runs-on: [self-hosted, linux]
 ```
 
-## Provider Setup
+## 🔧 Provider Setup
 
 ### GitHub Actions
 
@@ -78,7 +78,7 @@ ADO_POOL=Default               # Agent pool name
 
 **PAT Scopes Required:** `Agent Pools (read, manage)`
 
-## Commands
+## 💻 Commands
 
 ```bash
 cd orchestrator/
@@ -90,7 +90,7 @@ cd orchestrator/
 ./select-provider.sh build    # Build image locally
 ```
 
-## Pre-built Images
+## 📦 Pre-built Images
 
 Images are automatically published to Docker Hub when provider files change on main.
 
@@ -110,7 +110,7 @@ provider and matches the orchestrator expectations.
 
 Available tags: `latest`, `v1.2.3` (semver), `<commit-sha>`, `<YYYYMMDD>`
 
-## Compatibility Contract
+## 📜 Compatibility Contract
 
 OSCR enforces strict compatibility rules to ensure reliable operation:
 
@@ -141,7 +141,7 @@ Optional labels for targeting specific runners:
 runs-on: [self-hosted, linux, docker]
 ```
 
-## Scaling
+## 📈 Scaling
 
 OSCR does not implement auto-scaling. For multiple concurrent jobs, scale manually:
 
@@ -152,7 +152,7 @@ docker compose -f docker-compose.yml --profile github up -d --scale github-runne
 
 Each instance registers as a separate runner with a unique name.
 
-## Security
+## 🔒 Security
 
 See [docs/security.md](docs/security.md) for the full security model.
 
@@ -162,15 +162,18 @@ See [docs/security.md](docs/security.md) for the full security model.
 - Secrets are injected via provider-native mechanisms only
 - Workspaces are ephemeral
 
-## Documentation
+## 📚 Documentation
 
+- [Start Here](docs/START_HERE.md) - Quick-start guide for AI code review
 - [Architecture](docs/architecture.md) - System design and components
 - [Security](docs/security.md) - Threat model and hardening
 - [Providers](docs/providers.md) - Provider-specific details
 - [Usage](docs/usage.md) - Day-to-day operations
 - [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
+- [Azure DevOps Quickstart](docs/azure-devops-quickstart.md) - ADO-specific setup
+- [Ollama Integration](docs/ollama-integration.md) - Local LLM for air-gapped review
 
-## Development
+## 🛠️ Development
 
 OSCR uses a Makefile for consistent development commands:
 
@@ -185,11 +188,11 @@ make ci            # Full CI pipeline (lint + build)
 
 For contributors, see [CONTRIBUTING.md](CONTRIBUTING.md) for design principles.
 
-## Project Governance
+## ⚖️ Project Governance
 
 - [INVARIANTS.md](INVARIANTS.md) - Non-negotiable design constraints
 - [SPEC.md](SPEC.md) - Technical specification
 
-## License
+## 📄 License
 
 [MIT](LICENSE)

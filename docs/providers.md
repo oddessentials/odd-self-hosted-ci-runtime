@@ -114,7 +114,6 @@ The Azure DevOps provider uses the official [Azure Pipelines Agent](https://gith
 | Image | `oddessentials/oscr-azure-devops` |
 | User | `agent` (non-root) |
 | Workdir | `/home/agent/work` |
-| Semgrep | Preinstalled (for AI code review) |
 
 ### Configuration
 

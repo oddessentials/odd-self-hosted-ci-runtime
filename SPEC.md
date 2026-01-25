@@ -71,12 +71,16 @@ odd-self-hosted-ci-runtime/
 │  └─ smoke-test.yml      # Manual runner verification
 ├─ azure-pipelines.yml    # Azure DevOps CI pipeline
 ├─ docs/
+│  ├─ START_HERE.md
 │  ├─ architecture.md
-│  ├─ security.md
+│  ├─ azure-devops-quickstart.md
+│  ├─ ollama-integration.md
 │  ├─ providers.md
-│  ├─ usage.md
-│  └─ troubleshooting.md
+│  ├─ security.md
+│  ├─ troubleshooting.md
+│  └─ usage.md
 ├─ orchestrator/
+│  ├─ START_HERE.md
 │  ├─ docker-compose.yml
 │  ├─ env.example
 │  └─ select-provider.sh
