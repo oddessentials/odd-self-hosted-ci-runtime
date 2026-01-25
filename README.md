@@ -1,6 +1,8 @@
 # 🐝 Odd Self-Hosted CI Runtime (OSCR)
 
 [![CI](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/ci.yml/badge.svg)](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/ci.yml)
+[![Self-Hosted Smoke Test](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/smoke-test.yml/badge.svg)](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/smoke-test.yml)
+[![Publish Docker Images](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/publish.yml/badge.svg)](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/publish.yml)
 [![Release](https://img.shields.io/github/v/release/oddessentials/odd-self-hosted-ci-runtime?display_name=tag&sort=semver)](https://github.com/oddessentials/odd-self-hosted-ci-runtime/releases)
 [![License](https://img.shields.io/github/license/oddessentials/odd-self-hosted-ci-runtime)](LICENSE)
 [![Docker Hub Pulls (GitHub Runner)](https://img.shields.io/docker/pulls/oddessentials/oscr-github?label=docker%20pulls%20github)](https://hub.docker.com/r/oddessentials/oscr-github)
