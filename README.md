@@ -5,6 +5,11 @@
 [![License](https://img.shields.io/github/license/oddessentials/odd-self-hosted-ci-runtime)](LICENSE)
 [![Docker Hub Pulls (GitHub Runner)](https://img.shields.io/docker/pulls/oddessentials/oscr-github?label=docker%20pulls%20github)](https://hub.docker.com/r/oddessentials/oscr-github)
 [![Docker Hub Pulls (Azure DevOps Agent)](https://img.shields.io/docker/pulls/oddessentials/oscr-azure-devops?label=docker%20pulls%20azure)](https://hub.docker.com/r/oddessentials/oscr-azure-devops)
+[![Docker Image Size (GitHub)](https://img.shields.io/docker/image-size/oddessentials/oscr-github/latest?label=image%20size%20github)](https://hub.docker.com/r/oddessentials/oscr-github)
+[![Docker Image Size (Azure)](https://img.shields.io/docker/image-size/oddessentials/oscr-azure-devops/latest?label=image%20size%20azure)](https://hub.docker.com/r/oddessentials/oscr-azure-devops)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 **Docker-first, provider-pluggable self-hosted CI runtime.**
 
