@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # GitHub Actions runner version
 # Check for latest: https://github.com/actions/runner/releases
-ARG RUNNER_VERSION=2.321.0
+ARG RUNNER_VERSION=2.335.1
 ARG RUNNER_ARCH=x64
 
 # -----------------------------------------------------------------------------
