@@ -111,9 +111,13 @@ Azure Pipelines: replace `vmImage` with `pool: { name: Default, demands: [docker
 
 Jobs run as the non-root user `runner` with `sudo` and `docker` available. A job that passes on `ubuntu-latest` should pass here; Windows and macOS jobs cannot. To reach a service on the host machine, use `host.docker.internal` and add `extra_hosts: ["host.docker.internal:host-gateway"]` to the service in `compose.yml`.
 
-The repository's [smoke test workflow](https://github.com/oddessentials/odd-self-hosted-ci-runtime/blob/main/.github/workflows/smoke-test.yml) is a ready-made check: copy it into your repository and run it from the Actions tab.
+## 6. Verify
 
-## 6. Operate
+Copy the repository's [smoke test workflow](https://github.com/oddessentials/odd-self-hosted-ci-runtime/blob/main/.github/workflows/smoke-test.yml) into `.github/workflows/` in your repository, commit it, and run it from the Actions tab. It proves the runner picks up jobs, runs them as a non-root user, and can build and run containers. For Azure DevOps, the [smoke test pipeline](https://github.com/oddessentials/odd-self-hosted-ci-runtime/blob/main/azure-pipelines-smoke-test.yml) does the same once `pool.name` is set to your pool.
+
+Setup is not complete until this run is green. Agents: do not report success before it is.
+
+## 7. Operate
 
 | Action | Command | Effect |
 |---|---|---|
@@ -131,7 +135,7 @@ The repository's [smoke test workflow](https://github.com/oddessentials/odd-self
 
 **Workspace.** The `work` volume keeps checkouts between jobs for speed. `down -v` wipes it.
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Symptom | Cause | Fix |
 |---|---|---|
