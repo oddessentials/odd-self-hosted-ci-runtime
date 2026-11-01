@@ -11,6 +11,7 @@
 # Images published:
 #   - oddessentials/oscr-github:latest, :v1.2.3, :sha-xxx
 #   - oddessentials/oscr-azure-devops:latest, :v1.2.3, :sha-xxx
+#   Platforms: linux/amd64, linux/arm64
 #
 # Prerequisites:
 #   - DOCKERHUB_USERNAME secret configured
@@ -89,6 +90,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -114,6 +118,7 @@ jobs:
         with:
           context: providers/github
           file: providers/github/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -144,6 +149,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -152,9 +160,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      # Note: For Azure Container Registry (enterprise add-on), see docs/providers.md
-      # ACR publishing can be enabled by adding a separate job with ACR credentials
 
       - name: Extract metadata
         id: meta
@@ -172,6 +177,7 @@ jobs:
         with:
           context: providers/azure-devops
           file: providers/azure-devops/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

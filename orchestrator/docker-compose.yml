@@ -1,13 +1,4 @@
-# =============================================================================
-# OSCR Docker Compose Configuration
-# =============================================================================
-# Do not run this file directly. Use select-provider.sh instead.
-# This file defines service templates for each provider.
-
 services:
-  # ---------------------------------------------------------------------------
-  # GitHub Actions Runner
-  # ---------------------------------------------------------------------------
   github-runner:
     image: oddessentials/oscr-github:latest
     build:
@@ -26,15 +17,11 @@ services:
       - runner-work:/home/runner/work
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    networks:
-      - oscr-network
+    stop_grace_period: 60s
     restart: unless-stopped
     profiles:
       - github
 
-  # ---------------------------------------------------------------------------
-  # Azure DevOps Agent
-  # ---------------------------------------------------------------------------
   azure-devops-agent:
     image: oddessentials/oscr-azure-devops:latest
     build:
@@ -53,90 +40,11 @@ services:
       - agent-work:/home/agent/work
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    networks:
-      - oscr-network
+    stop_grace_period: 60s
     restart: unless-stopped
     profiles:
-      - azure-devops
-
-  # ---------------------------------------------------------------------------
-  # Ollama - Local LLM Inference Server (Optional)
-  # ---------------------------------------------------------------------------
-  # Provides local, air-gapped AI code review via the local_llm agent.
-  # Model is automatically pulled and warmed up on startup.
-  #
-  # Network aliases allow both URLs to work:
-  #   - http://ollama:11434 (service name)
-  #   - http://ollama-sidecar:11434 (odd-ai-reviewers default)
-  ollama:
-    image: ollama/ollama:0.5.5
-    container_name: oscr-ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    volumes:
-      - ollama-models:/root/.ollama
-    networks:
-      oscr-network:
-        aliases:
-          - ollama-sidecar
-    environment:
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-codellama:7b}
-    # Auto-pull and warm up model on startup
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        # Start Ollama server in background
-        ollama serve &
-        OLLAMA_PID=$$!
-
-        # Wait for server to be ready with timeout and liveness check
-        echo "[ollama-warmup] Waiting for Ollama server (PID $$OLLAMA_PID)..."
-        TIMEOUT=60
-        ELAPSED=0
-        while ! ollama list > /dev/null 2>&1; do
-          # Check if Ollama process died
-          if ! kill -0 $$OLLAMA_PID 2>/dev/null; then
-            echo "[ollama-warmup] ERROR: Ollama server (PID $$OLLAMA_PID) died unexpectedly"
-            exit 1
-          fi
-          # Check timeout
-          if [ $$ELAPSED -ge $$TIMEOUT ]; then
-            echo "[ollama-warmup] ERROR: Timeout waiting for Ollama server after $${TIMEOUT}s"
-            exit 1
-          fi
-          sleep 2
-          ELAPSED=$$((ELAPSED + 2))
-        done
-        echo "[ollama-warmup] Ollama server ready"
-
-        # Pull model if not present
-        MODEL=$${OLLAMA_MODEL:-codellama:7b}
-        echo "[ollama-warmup] Ensuring model $$MODEL is available..."
-        ollama pull $$MODEL
-
-        # Warm up model with a simple request to load into memory
-        echo "[ollama-warmup] Warming up model $$MODEL..."
-        echo "Hello" | ollama run $$MODEL --nowordwrap 2>/dev/null || true
-        echo "[ollama-warmup] Model $$MODEL ready and warmed up"
-
-        # Keep server running (wait for the background serve process)
-        wait $$OLLAMA_PID
-    restart: unless-stopped
-    profiles:
-      - github
       - azure-devops
 
 volumes:
   runner-work:
   agent-work:
-  ollama-models:
-
-
-networks:
-  oscr-network:
-    driver: bridge

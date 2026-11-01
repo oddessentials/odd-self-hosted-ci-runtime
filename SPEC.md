@@ -48,57 +48,6 @@ This keeps overhead low.
 
 ---
 
-## Repo Structure (authoritative)
-
-```
-odd-self-hosted-ci-runtime/
-├─ .editorconfig          # Editor consistency settings
-├─ .gitattributes         # Line ending enforcement (critical for .sh files)
-├─ .gitignore             # Ignored files (.env, node_modules, etc.)
-├─ .dockerignore          # Docker build context exclusions
-├─ LICENSE                # MIT license
-├─ Makefile               # Build and quality targets
-├─ README.md              # Quick start and overview
-├─ SPEC.md                # This specification
-├─ INVARIANTS.md          # Non-negotiable design constraints
-├─ CONTRIBUTING.md        # Contributor guidelines
-├─ .releaserc.json        # Semantic release configuration
-├─ commitlint.config.js   # Conventional commits enforcement
-├─ .github/workflows/
-│  ├─ ci.yml              # Automated quality gates + commitlint
-│  ├─ release.yml         # Semantic versioning and GitHub releases
-│  ├─ publish.yml         # Docker Hub image publishing
-│  └─ smoke-test.yml      # Manual runner verification
-├─ azure-pipelines.yml    # Azure DevOps CI pipeline
-├─ docs/
-│  ├─ START_HERE.md
-│  ├─ architecture.md
-│  ├─ azure-devops-quickstart.md
-│  ├─ ollama-integration.md
-│  ├─ providers.md
-│  ├─ security.md
-│  ├─ troubleshooting.md
-│  └─ usage.md
-├─ orchestrator/
-│  ├─ START_HERE.md
-│  ├─ docker-compose.yml
-│  ├─ env.example
-│  └─ select-provider.sh
-├─ providers/
-│  ├─ github/
-│  │  ├─ Dockerfile
-│  │  └─ entrypoint.sh
-│  └─ azure-devops/
-│     ├─ Dockerfile
-│     └─ entrypoint.sh
-└─ scripts/
-   ├─ register.sh
-   ├─ unregister.sh
-   └─ healthcheck.sh
-```
-
----
-
 ## Provider Selection Contract
 
 **Single env var (required):**
