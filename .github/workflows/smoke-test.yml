@@ -10,14 +10,14 @@ on:
   workflow_dispatch:
     inputs:
       runner_labels:
-        description: 'Runner labels (comma-separated)'
+        description: 'Runner labels as a JSON array'
         required: false
-        default: 'self-hosted,linux'
+        default: '["self-hosted", "linux"]'
 
 jobs:
   smoke-test:
     name: Smoke Test
-    runs-on: ${{ fromJson(format('[{0}]', inputs.runner_labels || 'self-hosted,linux')) }}
+    runs-on: ${{ fromJson(inputs.runner_labels) }}
 
     steps:
       - name: Runner Information
