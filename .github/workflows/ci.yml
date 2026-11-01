@@ -2,7 +2,7 @@
 # OSCR CI Pipeline - GitHub Actions
 # =============================================================================
 # Automated quality gates for pull requests and main branch pushes.
-# Runs: PR title lint, shellcheck, CRLF detection, Docker build verification.
+# Runs: PR title lint, shellcheck, CRLF detection, Docker build verification, docs site build.
 
 name: CI
 
@@ -98,6 +98,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -105,6 +108,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./providers/${{ matrix.provider }}
+          platforms: linux/amd64,linux/arm64
           push: false
           tags: oscr-${{ matrix.provider }}:test
           cache-from: type=gha
@@ -133,3 +137,24 @@ jobs:
         run: |
           bash -n providers/github/entrypoint.sh
           bash -n providers/azure-devops/entrypoint.sh
+
+  site:
+    name: Docs Site Build
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: node docs/build.mjs

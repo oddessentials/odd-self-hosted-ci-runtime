@@ -39,3 +39,6 @@ temp/
 
 # Local scratch env files (contain secrets)
 .extraenv.md
+
+# Built docs site
+_site/

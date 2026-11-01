@@ -1,198 +1,40 @@
 # 🐝 Odd Self-Hosted CI Runtime (OSCR)
 
 [![CI](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/ci.yml/badge.svg)](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/ci.yml)
-[![Self-Hosted Smoke Test](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/smoke-test.yml/badge.svg)](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/smoke-test.yml)
+[![Pages](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/pages.yml/badge.svg)](https://oddessentials.github.io/odd-self-hosted-ci-runtime/)
 [![Publish Docker Images](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/publish.yml/badge.svg)](https://github.com/oddessentials/odd-self-hosted-ci-runtime/actions/workflows/publish.yml)
 [![Release](https://img.shields.io/github/v/release/oddessentials/odd-self-hosted-ci-runtime?display_name=tag&sort=semver)](https://github.com/oddessentials/odd-self-hosted-ci-runtime/releases)
 [![License](https://img.shields.io/github/license/oddessentials/odd-self-hosted-ci-runtime)](LICENSE)
 [![Docker Hub Pulls (GitHub Runner)](https://img.shields.io/docker/pulls/oddessentials/oscr-github?label=docker%20pulls%20github)](https://hub.docker.com/r/oddessentials/oscr-github)
 [![Docker Hub Pulls (Azure DevOps Agent)](https://img.shields.io/docker/pulls/oddessentials/oscr-azure-devops?label=docker%20pulls%20azure)](https://hub.docker.com/r/oddessentials/oscr-azure-devops)
-[![Docker Image Size (GitHub)](https://img.shields.io/docker/image-size/oddessentials/oscr-github/latest?label=image%20size%20github)](https://hub.docker.com/r/oddessentials/oscr-github)
-[![Docker Image Size (Azure)](https://img.shields.io/docker/image-size/oddessentials/oscr-azure-devops/latest?label=image%20size%20azure)](https://hub.docker.com/r/oddessentials/oscr-azure-devops)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-**Docker-first, provider-pluggable self-hosted CI runtime.**
+The official GitHub Actions runner or Azure Pipelines agent, in one Linux container with Docker, on your own hardware. Any OS that runs Docker, x86-64 or arm64, zero cloud cost.
 
-Run your CI pipelines at zero cloud cost using your own hardware.
+## Get started
 
-## 📋 Requirements
+**[Setup and operations guide](https://oddessentials.github.io/odd-self-hosted-ci-runtime/)**: from token to first job, including when to leave a runner running, how it behaves on boot, and how to stop it cleanly.
 
-- **Docker Engine 20.10+**: Required for cross-platform networking support (`host-gateway`).
-- **Docker Compose**: Required to run the orchestrator.
-- **Git**: For cloning and repository management.
+Working with an AI agent? Point it at the raw guide: `https://oddessentials.github.io/odd-self-hosted-ci-runtime/agents.md`
 
-## ✨ Features
+## Images
 
-- **Zero cloud cost** - Run CI on your existing infrastructure
-- **Provider-pluggable** - GitHub Actions and Azure DevOps support
-- **Ephemeral by default** - Auto-registers on start, auto-unregisters on stop
-- **Docker-first** - Host OS agnostic, Linux containers only
-- **Minimal workflow changes** - Just update `runs-on` in your YAML
+| Image | Provider |
+|---|---|
+| [`oddessentials/oscr-github`](https://hub.docker.com/r/oddessentials/oscr-github) | GitHub Actions |
+| [`oddessentials/oscr-azure-devops`](https://hub.docker.com/r/oddessentials/oscr-azure-devops) | Azure DevOps |
 
-## 🚀 Quick Start
+Tags: `latest`, `vX.Y.Z`, commit SHA, `YYYYMMDD`. Platforms: `linux/amd64`, `linux/arm64`.
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/oddessentials/odd-self-hosted-ci-runtime.git
-cd odd-self-hosted-ci-runtime/orchestrator
+## Development
 
-# 2. Configure your provider
-cp env.example .env
-# Edit .env with your credentials (see Provider Setup below)
+`make help` lists the lint and build targets. Pull request titles follow Conventional Commits and are squash-merged; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-# 3. Start the runner
-./select-provider.sh start
+## Governance
 
-# 4. Update your workflow
-# Change: runs-on: ubuntu-latest
-# To:     runs-on: [self-hosted, linux]
-```
+[INVARIANTS.md](INVARIANTS.md) holds the non-negotiable constraints. [SPEC.md](SPEC.md) holds the specification.
 
-## 🔧 Provider Setup
-
-### GitHub Actions
-
-```bash
-# Required in .env
-CI_PROVIDER=github
-GITHUB_PAT=ghp_xxxxxxxxxxxx  # Personal Access Token
-GITHUB_OWNER=your-org        # Organization or user
-GITHUB_REPO=your-repo        # Optional: omit for org-level runner
-```
-
-**PAT Scopes Required:**
-- Repository runner: `repo`
-- Organization runner: `admin:org`
-
-### Azure DevOps
-
-```bash
-# Required in .env
-CI_PROVIDER=azure-devops
-ADO_PAT=xxxxxxxxxxxx           # Personal Access Token
-ADO_ORG_URL=https://dev.azure.com/your-org
-ADO_POOL=Default               # Agent pool name
-```
-
-**PAT Scopes Required:** `Agent Pools (read, manage)`
-
-## 💻 Commands
-
-```bash
-cd orchestrator/
-
-./select-provider.sh start    # Start the runner
-./select-provider.sh stop     # Stop and unregister
-./select-provider.sh logs     # Follow runner logs
-./select-provider.sh status   # Show container status
-./select-provider.sh build    # Build image locally
-```
-
-## 📦 Pre-built Images
-
-Images are automatically published to Docker Hub when provider files change on main.
-
-```bash
-docker pull oddessentials/oscr-github:latest
-docker pull oddessentials/oscr-azure-devops:latest
-```
-
-### Docker Hub
-
-OSCR publishes provider-specific runtime images to Docker Hub so you can pull a
-ready-to-run container without building locally. Each image is tuned for its CI
-provider and matches the orchestrator expectations.
-
-- [`oddessentials/oscr-github`](https://hub.docker.com/r/oddessentials/oscr-github) - GitHub Actions runner image for self-hosted GitHub workflows.
-- [`oddessentials/oscr-azure-devops`](https://hub.docker.com/r/oddessentials/oscr-azure-devops) - Azure DevOps agent image for self-hosted Azure pipelines.
-
-Available tags: `latest`, `v1.2.3` (semver), `<commit-sha>`, `<YYYYMMDD>`
-
-## 📜 Compatibility Contract
-
-OSCR enforces strict compatibility rules to ensure reliable operation:
-
-| Rule | Description |
-|------|-------------|
-| **Linux-only** | All jobs execute in Linux containers. Windows/macOS jobs are not supported. |
-| **Non-root** | Runner processes execute as non-root users. |
-| **No fork PRs** | Self-hosted runners do not execute fork pull requests by default. |
-| **Docker-in-Docker** | Jobs requiring Docker must use Docker-in-Docker or job containers. |
-| **Ephemeral workspace** | Workspace is wiped between jobs. Do not rely on persistent state. |
-| **One job at a time** | Each runner executes one job concurrently. |
-
-### Workflow Requirements
-
-Your workflows must be Linux-compatible. The only required change:
-
-```yaml
-# Before (cloud-hosted)
-runs-on: ubuntu-latest
-
-# After (self-hosted)
-runs-on: [self-hosted, linux]
-```
-
-Optional labels for targeting specific runners:
-
-```yaml
-runs-on: [self-hosted, linux, docker]
-```
-
-## 📈 Scaling
-
-OSCR does not implement auto-scaling. For multiple concurrent jobs, scale manually:
-
-```bash
-# Run 3 instances of the GitHub runner
-docker compose -f docker-compose.yml --profile github up -d --scale github-runner=3
-```
-
-Each instance registers as a separate runner with a unique name.
-
-## 🔒 Security
-
-See [docs/security.md](docs/security.md) for the full security model.
-
-**Key points:**
-- Runners execute as non-root
-- Fork PRs are blocked by default
-- Secrets are injected via provider-native mechanisms only
-- Workspaces are ephemeral
-
-## 📚 Documentation
-
-- [Start Here](docs/START_HERE.md) - Quick-start guide for AI code review
-- [Architecture](docs/architecture.md) - System design and components
-- [Security](docs/security.md) - Threat model and hardening
-- [Providers](docs/providers.md) - Provider-specific details
-- [Usage](docs/usage.md) - Day-to-day operations
-- [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
-- [Azure DevOps Quickstart](docs/azure-devops-quickstart.md) - ADO-specific setup
-- [Ollama Integration](docs/ollama-integration.md) - Local LLM for air-gapped review
-
-## 🛠️ Development
-
-OSCR uses a Makefile for consistent development commands:
-
-```bash
-make help          # Show available targets
-make lint          # Run shellcheck on all scripts
-make lint-docker   # Run shellcheck via Docker (no local install)
-make verify        # Run all quality checks
-make build         # Build all Docker images
-make ci            # Full CI pipeline (lint + build)
-```
-
-For contributors, see [CONTRIBUTING.md](CONTRIBUTING.md) for design principles.
-
-## ⚖️ Project Governance
-
-- [INVARIANTS.md](INVARIANTS.md) - Non-negotiable design constraints
-- [SPEC.md](SPEC.md) - Technical specification
-
-## 📄 License
+## License
 
 [MIT](LICENSE)

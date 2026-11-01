@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="Run the official GitHub Actions runner or Azure Pipelines agent in one Docker container on your own machine.">
+<meta name="color-scheme" content="light dark">
+<style>
+:root {
+  --bg: #fbfbf9;
+  --fg: #1c1c1a;
+  --muted: #5f5f5a;
+  --line: #e4e3dd;
+  --accent: #b86a07;
+  --code-bg: #f1f0ea;
+  --surface: #ffffff;
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15161a;
+    --fg: #e8e6e0;
+    --muted: #a3a29b;
+    --line: #2b2d33;
+    --accent: #f0a04b;
+    --code-bg: #1e2026;
+    --surface: #1a1b20;
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 17px/1.6 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 1rem; }
+header.top { border-bottom: 1px solid var(--line); padding: 1rem 0; }
+header.top .wrap { display: flex; align-items: baseline; gap: 1.25rem; flex-wrap: wrap; }
+.brand { font-weight: 700; letter-spacing: .02em; font-size: 1.05rem; color: var(--fg); }
+.brand small { font-weight: 400; color: var(--muted); margin-left: .5rem; }
+.links { margin-left: auto; display: flex; gap: 1.25rem; font-size: .95rem; }
+.layout { display: grid; grid-template-columns: 1fr; gap: 2rem; padding: 2rem 0 4rem; }
+nav.toc { display: none; }
+main { min-width: 0; max-width: 72ch; }
+@media (min-width: 1000px) {
+  .layout { grid-template-columns: 220px minmax(0, 1fr); gap: 3.5rem; }
+  nav.toc { display: block; position: sticky; top: 2rem; align-self: start; font-size: .92rem; }
+  nav.toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+  nav.toc li { margin: 0; }
+  nav.toc li a { display: block; padding: .3rem .85rem; color: var(--muted); border-left: 2px solid transparent; margin-left: -1px; }
+  nav.toc li a:hover, nav.toc li a[aria-current] { color: var(--fg); border-left-color: var(--accent); text-decoration: none; }
+}
+h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.01em; margin: 0 0 1rem; }
+h2 { font-size: 1.35rem; margin: 2.75rem 0 .75rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+h3 { font-size: 1.05rem; margin: 1.75rem 0 .5rem; }
+h1 a, h2 a, h3 a { color: inherit; }
+h2 a:hover { text-decoration: none; }
+h2 a:hover::after { content: " #"; color: var(--muted); }
+p, ul, ol, table, pre { margin: 0 0 1rem; }
+main > p:first-of-type { font-size: 1.1rem; color: var(--muted); }
+main > p:nth-of-type(2) { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); padding: .85rem 1rem; border-radius: 6px; }
+li { margin: .25rem 0; }
+code { font-family: var(--mono); font-size: .9em; background: var(--code-bg); padding: .12em .35em; border-radius: 4px; overflow-wrap: anywhere; }
+pre { position: relative; background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: .9rem 1rem; overflow-x: auto; line-height: 1.5; }
+pre code { background: none; padding: 0; font-size: .88rem; overflow-wrap: normal; }
+pre button { position: absolute; top: .5rem; right: .5rem; font: inherit; font-size: .75rem; padding: .2rem .55rem; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); color: var(--muted); cursor: pointer; }
+pre button:hover { color: var(--fg); }
+table { width: 100%; border-collapse: collapse; font-size: .93rem; display: block; overflow-x: auto; }
+th, td { text-align: left; vertical-align: top; padding: .55rem .7rem; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 600; }
+td:first-child { white-space: nowrap; }
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; padding: 1.5rem 0; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./">OSCR <small>Odd Self-Hosted CI Runtime</small></a>
+    <div class="links">
+      <a href="./agents.md">Raw Markdown</a>
+      <a href="https://github.com/oddessentials/odd-self-hosted-ci-runtime">GitHub</a>
+    </div>
+  </div>
+</header>
+<div class="wrap layout">
+  <nav class="toc" aria-label="Contents"><ol>
+{{nav}}
+  </ol></nav>
+  <main>
+{{body}}
+  </main>
+</div>
+<footer><div class="wrap">MIT licensed. Rendered from <a href="./agents.md">agents.md</a> on every change.</div></footer>
+<script>
+for (const pre of document.querySelectorAll("pre")) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = "Copy";
+  b.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(pre.querySelector("code").innerText);
+      b.textContent = "Copied";
+    } catch {
+      b.textContent = "Select and copy";
+    }
+    setTimeout(() => { b.textContent = "Copy"; }, 1500);
+  });
+  pre.appendChild(b);
+}
+const links = [...document.querySelectorAll("nav.toc a")];
+const byId = new Map(links.map((a) => [a.hash.slice(1), a]));
+if (byId.size) {
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      links.forEach((a) => a.removeAttribute("aria-current"));
+      byId.get(e.target.id)?.setAttribute("aria-current", "true");
+    }
+  }, { rootMargin: "0px 0px -70% 0px" });
+  document.querySelectorAll("main h2").forEach((h) => io.observe(h));
+}
+</script>
+</body>
+</html>
