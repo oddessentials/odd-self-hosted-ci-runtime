@@ -5,6 +5,12 @@ All notable changes to OSCR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.8.1](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.8.0...v1.8.1) (2026-11-01)
+
+### Bug Fixes
+
+* **ci:** accept smoke test runner labels as a JSON array ([79047d9](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/79047d928df923e9e0535f4e9410b5fe748191f5))
+
 ## [1.8.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.7.0...v1.8.0) (2026-11-01)
 
 ### Features
