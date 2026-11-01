@@ -5,6 +5,12 @@ All notable changes to OSCR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.8.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.7.0...v1.8.0) (2026-11-01)
+
+### Features
+
+* multi-arch images, Pages docs site, drop AI review ([a845059](https://github.com/oddessentials/odd-self-hosted-ci-runtime/commit/a8450599c115fe3a4d6eea3ce3e96c96ae962a44))
+
 ## [1.7.0](https://github.com/oddessentials/odd-self-hosted-ci-runtime/compare/v1.6.1...v1.7.0) (2026-01-23)
 
 ### Features
